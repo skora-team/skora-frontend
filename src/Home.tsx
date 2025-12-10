@@ -105,20 +105,25 @@ const Home: React.FC = () => {
 
           {/* Hero content */}
           <div className="relative z-10 text-center max-w-2xl text-white flex flex-col items-center gap-4">
-            <h2 className="text-lg font-['Press_Start_2P'] text-gray-100">
-  START YOUR
-</h2>
+         <div className="flex flex-col items-center float-both">
 
-            <img
-              src="/LandingPage_Text.gif"
-              className="w-full max-w-md mx-auto"
-              alt="Coding Adventure"
-            />
+  {/* START YOUR */}
+  <h2 className="text-lg text-gray-100 font-['Press_Start_2P'] mb-11">
+    START YOUR
+  </h2>
 
-            <p className="text-lg mb-2 text-gray-100">
-              The most fun and beginner-friendly way to learn to code with Skora.
-            </p>
+  {/* CODING ADVENTURE TITLE */}
+  <img
+    src="/LandingPage_Text.gif"
+    className="mx-auto scale-[2] md:scale-[2.2] origin-center image-render mb-6"
+    alt="Coding Adventure"
+  />
 
+</div>
+
+<p className="text-lg text-gray-100 mt-2">
+    The most fun and beginner-friendly way to learn to code with Skora.
+  </p>
             {/* GET STARTED BUTTON */}
             <button
               className="
