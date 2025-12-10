@@ -1,10 +1,10 @@
 import React from "react";
+import { Link } from "react-router-dom";
 import {
   FaInstagram,
   FaTwitter,
   FaGithub,
   FaLinkedin,
-  FaTiktok,
   FaDiscord,
 } from "react-icons/fa";
 
@@ -17,7 +17,14 @@ const Footer: React.FC = () => {
         <div>
           <h3 className="text-white font-semibold mb-4">COMPANY</h3>
           <ul className="space-y-2 text-sm">
-            <li>About</li>
+            <li>
+              <Link
+                to="/about"
+                className="hover:text-white transition"
+              >
+                About
+              </Link>
+            </li>
           </ul>
         </div>
 
@@ -37,7 +44,7 @@ const Footer: React.FC = () => {
           <ul className="space-y-2 text-sm">
             <li>All Courses</li>
             <li>AIML</li>
-             <li>Python</li>
+            <li>Python</li>
             <li>R Programming</li>
             <li>SQL</li>
           </ul>
@@ -47,34 +54,109 @@ const Footer: React.FC = () => {
         <div>
           <h3 className="text-white font-semibold mb-4">TECH</h3>
           <ul className="space-y-2 text-sm">
-            <li>React</li>
-            <li>Git & GitHub</li>
-             <li>Fast Api</li>
-            <li>SupaBase</li>
+            <li>
+              <a
+                href="https://react.dev/"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="hover:text-white transition"
+              >
+                React
+              </a>
+            </li>
+            <li>
+              <a
+                href="https://github.com/"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="hover:text-white transition"
+              >
+                Git & GitHub
+              </a>
+            </li>
+            <li>
+              <a
+                href="https://fastapi.tiangolo.com/"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="hover:text-white transition"
+              >
+                FastAPI
+              </a>
+            </li>
+            <li>
+              <a
+                href="https://supabase.com/"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="hover:text-white transition"
+              >
+                Supabase
+              </a>
+            </li>
           </ul>
         </div>
+
       </div>
 
       {/* BOTTOM BAR */}
       <div className="max-w-7xl mx-auto mt-12 flex flex-col md:flex-row justify-between items-center gap-4">
 
-        {/* Made With Love */}
         <p className="text-sm text-gray-400">
-          Made with <span className="text-red-500">❤️</span> in India,Kolhapur. 
+          Made with <span className="text-red-500">❤️</span> in India, Kolhapur.
         </p>
 
         {/* SOCIAL ICONS */}
         <div className="flex gap-4 text-xl text-gray-300">
-          <FaInstagram className="hover:text-pink-500 cursor-pointer" />
-          <FaTwitter className="hover:text-blue-400 cursor-pointer" />
-          <FaGithub className="hover:text-gray-100 cursor-pointer" />
-          <FaLinkedin className="hover:text-blue-600 cursor-pointer" />
-          <FaTiktok className="hover:text-white cursor-pointer" />
-          <FaDiscord className="hover:text-indigo-400 cursor-pointer" />
+
+          <a
+            href="https://www.instagram.com/skora_learning/"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="hover:text-pink-500 transition"
+          >
+            <FaInstagram />
+          </a>
+
+          <a
+            href="https://x.com/SkoraCrew"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="hover:text-blue-400 transition"
+          >
+            <FaTwitter />
+          </a>
+
+          <a
+            href="https://github.com/skora-team"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="hover:text-gray-100 transition"
+          >
+            <FaGithub />
+          </a>
+
+          <a
+            href="https://www.linkedin.com/in/skora-undefined-2257293a0/"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="hover:text-blue-600 transition"
+          >
+            <FaLinkedin />
+          </a>
+
+          <a
+            href="https://discord.gg/acNA5nrb9q"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="hover:text-indigo-400 transition"
+          >
+            <FaDiscord />
+          </a>
+
         </div>
       </div>
 
-      {/* COPYRIGHT */}
       <div className="max-w-7xl mx-auto mt-6 text-gray-500 text-xs">
         © 2025 Skora, Inc. — Terms & Privacy Policy
       </div>
