@@ -28,7 +28,7 @@ const LevelUpSection: React.FC = () => {
               ref={img1.ref}
               src="segade.png"
               className={`${
-                img1.isVisible ? "fade-up fade-delay-1" : "opacity-0 translate-y-5"
+                img1.isVisible ? "fade-up " : "opacity-0 translate-y-5"
               } w-64 md:w-450`}
               alt="section visual"
             />
@@ -41,7 +41,7 @@ const LevelUpSection: React.FC = () => {
               className={`text-3xl md:text-4xl font-['Press_Start_2P'] mb-4 leading-snug 
               ${
                 title1.isVisible
-                  ? "fade-up fade-delay-1"
+                  ? "fade-up "
                   : "opacity-0 translate-y-5"
               }`}
             >
@@ -50,10 +50,10 @@ const LevelUpSection: React.FC = () => {
 
             <p
               ref={para1.ref}
-              className={`text-black-300 text-[15px] leading-relaxed 
+              className={`text-black-300 text-[20px] leading-relaxed 
               ${
                 para1.isVisible
-                  ? "fade-up fade-delay-2"
+                  ? "fade-up "
                   : "opacity-0 translate-y-5"
               }`}
             >
@@ -76,7 +76,7 @@ const LevelUpSection: React.FC = () => {
               className={`text-3xl md:text-4xl font-['Press_Start_2P'] mb-4 leading-snug 
               ${
                 title2.isVisible
-                  ? "fade-up fade-delay-1"
+                  ? "fade-up "
                   : "opacity-0 translate-y-5"
               }`}
             >
@@ -85,10 +85,10 @@ const LevelUpSection: React.FC = () => {
 
             <p
               ref={para2.ref}
-              className={`text-black-300 text-[15px] leading-relaxed 
+              className={`text-black-300 text-[20px] leading-relaxed 
               ${
                 para2.isVisible
-                  ? "fade-up fade-delay-2"
+                  ? "fade-up "
                   : "opacity-0 translate-y-5"
               }`}
             >
@@ -104,7 +104,7 @@ const LevelUpSection: React.FC = () => {
               ref={img2.ref}
               src="public/pokemoncard.png"
               className={`${
-                img2.isVisible ? "fade-up fade-delay-1" : "opacity-0 translate-y-5"
+                img2.isVisible ? "fade-up " : "opacity-0 translate-y-5"
               } w-64 md:w-80`}
               alt="section visual"
             />
@@ -122,7 +122,7 @@ const LevelUpSection: React.FC = () => {
         ref={img3.ref}
         src="public/chi.gif"
         className={`${
-          img3.isVisible ? "fade-up fade-delay-1" : "opacity-0 translate-y-5"
+          img3.isVisible ? "fade-up" : "opacity-0 translate-y-5"
         } w-80 md:w-[800px]`}   // ← increased size
         alt="section visual"
       />
@@ -161,15 +161,15 @@ const LevelUpSection: React.FC = () => {
       <h2
         ref={title3.ref}
         className={`text-3xl md:text-4xl font-['Press_Start_2P'] mb-4 leading-snug 
-        ${title3.isVisible ? "fade-up fade-delay-1" : "opacity-0 translate-y-5"}`}
+        ${title3.isVisible ? "fade-up " : "opacity-0 translate-y-5"}`}
       >
         Turn Knowledge Into Creations
       </h2>
 
       <p
         ref={para3.ref}
-        className={`text-black-300 text-[15px] leading-relaxed 
-        ${para3.isVisible ? "fade-up fade-delay-2" : "opacity-0 translate-y-5"}`}
+        className={`text-black-300 text-[20px] leading-relaxed 
+        ${para3.isVisible ? "fade-up" : "opacity-0 translate-y-5"}`}
       >
         Every lesson becomes a mini-project you can show off—websites, games,
         tools, and fun experiments that prove what you’ve learned. The more
