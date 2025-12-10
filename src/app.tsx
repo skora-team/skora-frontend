@@ -159,6 +159,10 @@ const App: React.FC = () => {
 
           <LevelUpSection />
         </section>
+         <section className="bg-[#000000] py-16 px-5">
+
+
+        </section>
       </main>
     </>
   );
