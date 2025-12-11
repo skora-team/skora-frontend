@@ -23,7 +23,7 @@ const LevelUpSection: React.FC = () => {
       <section className="mt-40 py-24 px-6 text-black flex justify-center">
         <div className="w-full max-w-6xl grid grid-cols-1 md:grid-cols-2 items-center gap-10">
           {/* LEFT IMAGE */}
-          <div className="flex justify-center md:justify-start">
+          <div className="flex justify-center image-render md:justify-start">
             <img
               ref={img1.ref}
               src="segade.png"

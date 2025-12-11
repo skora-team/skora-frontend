@@ -2,6 +2,7 @@ import React from "react";
 import CourseCard from "./components/CourseCard";
 import LevelUpSection from "./LevelUpSection";
 import Footer from "./components/Footer";
+import { Link } from "react-router-dom";
 
 const Home: React.FC = () => {
   return (
@@ -108,14 +109,14 @@ const Home: React.FC = () => {
          <div className="flex flex-col items-center float-both">
 
   {/* START YOUR */}
-  <h2 className="text-lg text-gray-100 font-['Press_Start_2P'] mb-11">
+  <h2 className="text-lg text-black font-['Press_Start_2P'] mb-12">
     START YOUR
   </h2>
 
   {/* CODING ADVENTURE TITLE */}
   <img
     src="/LandingPage_Text.gif"
-    className="mx-auto scale-[2] md:scale-[2.2] origin-center image-render mb-6"
+    className="mx-auto scale-[2] md:scale-[2.5] origin-center image-render mb-7"
     alt="Coding Adventure"
   />
 
@@ -125,28 +126,30 @@ const Home: React.FC = () => {
     The most fun and beginner-friendly way to learn to code with Skora.
   </p>
             {/* GET STARTED BUTTON */}
-            <button
-              className="
-                relative
-                bg-[#F9CF4F]
-                text-black
-                font-bold
-                px-8
-                py-3
-                border-4
-                border-[#000000]
-                shadow-[0_4px_0_0_#000]
-                active:shadow-[0_2px_0_0_#000]
-                active:translate-y-[2px]
-                hover:bg-[#ffefb5]
-                rounded-none
-                select-none
-                transition-all
-                font-['Press_Start_2P',cursive]
-              "
-            >
-              Get started
-            </button>
+            <Link
+  to="/video"
+  className="
+    relative
+    inline-block
+    bg-[#F9CF4F]
+    text-black
+    px-5
+    py-1
+    border-3
+    border-[#000000]
+    shadow-[0_4px_0_0_#000]
+    active:shadow-[0_2px_0_0_#000]
+    active:translate-y-0.5
+    hover:bg-[#ffefb5]
+    rounded-none
+    select-none
+    transition-all
+    font-['Press_Start_2P',cursive]
+  "
+>
+  Get started
+</Link>
+
           </div>
         </section>
 

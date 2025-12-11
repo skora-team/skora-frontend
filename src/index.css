@@ -25,6 +25,11 @@
       transform: translateY(0);
     }
   }
+  .pixel-btn {
+  image-rendering: pixelated;
+  border-radius: 0;
+  font-family: 'Press Start 2P', monospace !important;
+}
 
   .fade-up {
     animation: fadeUp 0.8s ease-out forwards;
@@ -67,3 +72,27 @@
   .image-render {
     image-rendering: pixelated;
   }
+  
+@keyframes pixelPressSmooth {
+  0% {
+    transform: scale(1) translateY(0);
+    box-shadow: 0 4px 0 #000;
+  }
+  30% {
+    transform: scale(0.96) translateY(2px);
+    box-shadow: 0 3px 0 #000;
+  }
+  60% {
+    transform: scale(1.04) translateY(-1px);
+    box-shadow: 0 5px 0 #000;
+  }
+  100% {
+    transform: scale(1) translateY(0);
+    box-shadow: 0 4px 0 #000;
+  }
+}
+
+.pixel-press {
+  animation: pixelPressSmooth 0.45s cubic-bezier(0.25, 0.4, 0.3, 1) forwards;
+}
+
