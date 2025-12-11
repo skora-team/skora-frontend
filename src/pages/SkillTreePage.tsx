@@ -14,7 +14,7 @@ export function SkillTreePage() {
     });
   }, []);
 
-  if (isLoading) return <div className="min-h-screen flex items-center justify-center text-white">LOADING...</div>;
+  if (isLoading) return <div className="min-h-screen flex items-center justify-center text-white bg-[#11112b]">LOADING...</div>;
 
   const getColor = (index: number) => {
     if (index === 0) return 'yellow';
@@ -26,36 +26,42 @@ export function SkillTreePage() {
     <div className="min-h-screen p-8 flex flex-col items-center overflow-x-auto w-full bg-white">
       
       {/* 1. Header Title */}
-      <h1 className="text-5xl md:text-6xl font-black text-[#f97316] mb-2 tracking-widest drop-shadow-[4px_4px_0_#7c2d12]">
+      <h1 className="text-5xl md:text-6xl font-black text-[#ea580c] mb-2 tracking-widest drop-shadow-[4px_4px_0_#7c2d12]" 
+          style={{ textShadow: '4px 4px 0px #431407' }}>
         AIML
       </h1>
 
-      {/* 2. Top Connector (Orange) */}
-      <div className="h-8 w-2 bg-orange-500 shadow-[0_0_15px_#f97316] mb-0" />
+      {/* 2. Top Vertical Line (Connecting Title to Yellow Box) */}
+      <div className="h-10 w-3 bg-[#ea580c] border-x-2 border-[#9a3412] shadow-[0_0_10px_#ea580c]" />
 
       {/* 3. The Root Node (Empty Yellow Box) */}
-      <div className="w-64 h-16 bg-[#fbbf24] border-4 border-[#b45309] shadow-[6px_6px_0_rgba(0,0,0,0.5)] z-20 relative"></div>
+      <div className="w-72 h-20 bg-[#fbbf24] border-4 border-[#b45309] shadow-[6px_6px_0_rgba(0,0,0,0.5)] z-20 relative rounded-sm"></div>
 
-      {/* 4. Branching System Container */}
-      <div className="flex flex-col items-center w-full max-w-4xl">
+      {/* 4. The Fork / Branching System */}
+      <div className="flex flex-col items-center w-full">
         
-        {/* Main Vertical Stem */}
-        <div className="w-2 h-10 bg-orange-500 shadow-[0_0_15px_#f97316]" />
+        {/* Main Stem (From Root Box down) */}
+        <div className="w-3 h-12 bg-[#ea580c] border-x-2 border-[#9a3412] shadow-[0_0_10px_#ea580c]" />
 
-        {/* Horizontal Distributor Bar */}
-        {/* Width calculation: spans roughly from center of col 1 to center of col 3 */}
-        <div className="w-[calc(100%-12rem)] md:w-[680px] h-2 bg-orange-500 shadow-[0_0_15px_#f97316] relative flex justify-between">
-           {/* Dropdown Line: Left */}
-           <div className="absolute left-0 top-0 w-2 h-10 bg-orange-500 shadow-[0_0_15px_#f97316]" />
-           {/* Dropdown Line: Center */}
-           <div className="absolute left-1/2 -translate-x-1/2 top-0 w-2 h-10 bg-orange-500 shadow-[0_0_15px_#f97316]" />
-           {/* Dropdown Line: Right */}
-           <div className="absolute right-0 top-0 w-2 h-10 bg-orange-500 shadow-[0_0_15px_#f97316]" />
+        {/* The Horizontal Bar (Connects all 3 columns) */}
+        {/* We use a fixed width container that matches the columns layout below */}
+        <div className="relative w-[760px] h-3 bg-[#ea580c] border-y-2 border-[#9a3412] shadow-[0_0_15px_#ea580c] rounded-full">
+           
+           {/* Left Drop Line */}
+           <div className="absolute left-[120px] top-1 w-3 h-12 bg-[#ea580c] border-x-2 border-[#9a3412]" />
+           
+           {/* Center Drop Line (connects to the stem above) */}
+           <div className="absolute left-1/2 -translate-x-1/2 top-1 w-3 h-12 bg-[#ea580c] border-x-2 border-[#9a3412]" />
+           
+           {/* Right Drop Line */}
+           <div className="absolute right-[120px] top-1 w-3 h-12 bg-[#ea580c] border-x-2 border-[#9a3412]" />
         </div>
       </div>
 
       {/* 5. The Three Columns */}
-      <div className="flex justify-between items-start w-full max-w-5xl mt-8 px-2 md:px-0 gap-4">
+      {/* We shift this up slightly (-mt-2) to connect visually with the drop lines */}
+      <div className="flex justify-center items-start w-[800px] mt-10 gap-16">
+        
         {courses.map((course, index) => {
           const theme = getColor(index);
           const headerColors = {
@@ -65,16 +71,17 @@ export function SkillTreePage() {
           }[theme];
 
           return (
-            <div key={course.id} className="flex flex-col items-center flex-1">
+            <div key={course.id} className="flex flex-col items-center w-48">
+              
               {/* Column Header Box */}
-              <div className={`w-full max-w-[200px] h-14 flex items-center justify-center border-4 shadow-[4px_4px_0_rgba(0,0,0,0.5)] mb-8 ${headerColors}`}>
-                <h2 className="text-sm md:text-lg font-bold uppercase tracking-widest text-center">
+              <div className={`w-full h-14 flex items-center justify-center border-4 shadow-[4px_4px_0_rgba(0,0,0,0.5)] mb-8 ${headerColors}`}>
+                <h2 className="text-md font-bold uppercase tracking-widest text-center">
                   {course.title}
                 </h2>
               </div>
 
               {/* Lesson Stack */}
-              <div className="flex flex-col items-center">
+              <div className="flex flex-col items-center w-full">
                 {course.lessons.map((lesson) => (
                   <LessonNode key={lesson.id} lesson={lesson} colorTheme={theme} />
                 ))}
