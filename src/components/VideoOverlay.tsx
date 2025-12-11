@@ -9,7 +9,6 @@ interface VideoOverlayProps {
   onClose?: () => void;
   autoShow?: boolean;
   loop?: boolean;
-  redirectAfterClose?: string | null;
 }
 
 const VideoOverlay: React.FC<VideoOverlayProps> = ({
@@ -18,35 +17,35 @@ const VideoOverlay: React.FC<VideoOverlayProps> = ({
   onClose,
   autoShow = true,
   loop = false,
-  redirectAfterClose = "/signup", // 🔥 Now redirects to SIGNUP
 }) => {
   const [visible, setVisible] = useState(autoShow);
   const [muted, setMuted] = useState(true);
   const videoRef = useRef<HTMLVideoElement | null>(null);
   const navigate = useNavigate();
 
-  // Keyboard shortcuts
+  // Keyboard shortcuts (Esc to close, m to toggle mute)
   useEffect(() => {
     const handleKey = (e: KeyboardEvent) => {
       if (!visible) return;
       if (e.key === "Escape") handleClose();
-      if (e.key.toLowerCase() === "m") toggleMute();
+      if (e.key.toLowerCase() === "m") handleMuteClick();
     };
     window.addEventListener("keydown", handleKey);
     return () => window.removeEventListener("keydown", handleKey);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [visible, muted]);
 
-  // Try unmuted autoplay
+  // Try to autoplay unmuted because the user clicked "Get Started" (user gesture)
   useEffect(() => {
     if (visible && videoRef.current) {
       const v = videoRef.current;
 
+      // Try to start unmuted (best-effort). If blocked by browser, fallback to muted autoplay.
       v.muted = false;
       setMuted(false);
 
       const playPromise = v.play();
-
-      if (playPromise && playPromise.catch) {
+      if (playPromise && typeof playPromise.then === "function") {
         playPromise.catch(() => {
           v.muted = true;
           setMuted(true);
@@ -56,13 +55,13 @@ const VideoOverlay: React.FC<VideoOverlayProps> = ({
     }
   }, [visible]);
 
-  // Mute handler
+  // Keep video muted state in sync and ensure it plays
   useEffect(() => {
     if (visible && videoRef.current) {
       const v = videoRef.current;
       v.muted = muted;
       const p = v.play();
-      if (p?.catch) p.catch(() => {});
+      if (p && typeof p.then === "function") p.catch(() => {});
     }
   }, [visible, muted]);
 
@@ -70,25 +69,45 @@ const VideoOverlay: React.FC<VideoOverlayProps> = ({
     setVisible(false);
     videoRef.current?.pause();
     onClose?.();
-    navigate("/signup"); // 🔥 Redirects to SIGNUP
+    navigate("/signup");
+  };
+
+  const toggleMuteState = (next: boolean) => {
+    setMuted(next);
+    if (videoRef.current) videoRef.current.muted = next;
   };
 
   const toggleMute = () => {
-    setMuted((m) => {
-      const next = !m;
-      if (videoRef.current) videoRef.current.muted = next;
-      return next;
-    });
+    toggleMuteState(!muted);
+  };
+
+  // helper invoked by keyboard 'm' and by click wrapper to animate
+  const handleMuteClick = () => {
+    // animate button
+    const btn = document.getElementById("mute-btn");
+    if (btn) {
+      btn.classList.remove("pixel-press");
+      // restart animation
+      // eslint-disable-next-line @typescript-eslint/no-unused-expressions
+      void (btn as HTMLElement).offsetWidth;
+      btn.classList.add("pixel-press");
+    }
+    toggleMute();
   };
 
   if (!visible) return null;
 
   return (
-    <div className="fixed inset-0 z-50 bg-black/95 flex items-center justify-center p-4">
-
-      {/* ⭐ PIXEL SKIP BUTTON — TOP RIGHT */}
+    <div
+      className="fixed inset-0 z-50 bg-black/95 flex items-center justify-center p-4"
+      role="dialog"
+      aria-modal="true"
+      aria-label="Intro video"
+    >
+      {/* PIXEL SKIP BUTTON — TOP RIGHT (redirects to /signup) */}
       <button
         onClick={handleClose}
+        aria-label="Skip and go to signup"
         className="
           absolute top-4 right-4 z-60
           bg-[#F9CF4F]
@@ -120,49 +139,40 @@ const VideoOverlay: React.FC<VideoOverlayProps> = ({
           className="w-full h-auto rounded-xl shadow-2xl bg-black"
           onEnded={() => {
             setVisible(false);
-            navigate("/signup"); // 🔥 Also on end → signup
+            navigate("/signup");
           }}
         />
 
-        {/* PIXEL MUTE BUTTON */}
-       <button
-  onClick={() => {
-    toggleMute();
-    const btn = document.getElementById("mute-btn");
-    if (btn) {
-      btn.classList.remove("pixel-press");
-      void btn.offsetWidth; // restart animation trick
-      btn.classList.add("pixel-press");
-    }
-  }}
-  id="mute-btn"
-  aria-label={muted ? "Unmute video" : "Mute video"}
-  className="
-    absolute 
-    bottom-4 
-    right-4 
-    z-50
+        {/* PIXEL MUTE BUTTON — BOTTOM RIGHT (icon only) */}
+        <button
+          id="mute-btn"
+          onClick={handleMuteClick}
+          aria-label={muted ? "Unmute video" : "Mute video"}
+          className="
+            absolute 
+            bottom-4 
+            right-4 
+            z-50
 
-    bg-[#F9CF4F]
-    border-4 
-    border-[#000]
-    shadow-[0_4px_0_0_#000]
+            bg-[#F9CF4F]
+            border-4 
+            border-[#000]
+            shadow-[0_4px_0_0_#000]
 
-    w-12 
-    h-12 
-    flex 
-    items-center 
-    justify-center
-    pixel-btn
-  "
->
-  {muted ? (
-    <FaVolumeMute className="text-black text-2xl" />
-  ) : (
-    <FaVolumeUp className="text-black text-2xl" />
-  )}
-</button>
-
+            w-12 
+            h-12 
+            flex 
+            items-center 
+            justify-center
+            pixel-btn
+          "
+        >
+          {muted ? (
+            <FaVolumeMute className="text-black text-2xl" />
+          ) : (
+            <FaVolumeUp className="text-black text-2xl" />
+          )}
+        </button>
       </div>
     </div>
   );

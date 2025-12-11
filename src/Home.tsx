@@ -62,29 +62,31 @@ const Home: React.FC = () => {
         </div>
 
         {/* NAVBAR SIGN UP BUTTON */}
-        <button
-          className="
-            relative
-            bg-[#F9CF4F]
-            text-black
-            font-bold
-            text-xs
-            px-4
-            py-2
-            border-4
-            border-[#786601]
-            shadow-[0_3px_0_0_#000]
-            active:shadow-[0_1px_0_0_#000]
-            active:translate-y-[1px]
-            hover:bg-[#ffefb5]
-            rounded-none
-            select-none
-            transition-all
-            font-['Press_Start_2P',cursive]
-          "
-        >
-          Sign Up
-        </button>
+        <Link
+  to="/signup"
+  className="
+    relative
+    bg-[#F9CF4F]
+    text-black
+    font-bold
+    text-xs
+    px-4
+    py-2
+    border-4
+    border-[#786601]
+    shadow-[0_3px_0_0_#000]
+    active:shadow-[0_1px_0_0_#000]
+    active:translate-y-[1px]
+    hover:bg-[#ffefb5]
+    rounded-none
+    select-none
+    transition-all
+    font-['Press_Start_2P',cursive]
+  "
+>
+  Sign Up
+</Link>
+
       </nav>
 
       {/* MAIN CONTENT */}
