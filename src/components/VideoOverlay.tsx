@@ -153,12 +153,10 @@ const VideoOverlay: React.FC<VideoOverlayProps> = ({
             bottom-4 
             right-4 
             z-50
-
             bg-[#F9CF4F]
             border-4 
             border-[#000]
             shadow-[0_4px_0_0_#000]
-
             w-12 
             h-12 
             flex 

@@ -93,8 +93,8 @@ const Signup: React.FC = () => {
           <button
             type="submit"
             disabled={loading}
-            className="w-full bg-[#ffe600] text-[#0f0f1f] rounded-md py-3 font-['Press_Start_2P'] text-[12px] shadow-[0_4px_10px_rgba(255,230,0,0.6)] disabled:opacity-60"
-          >
+             className="w-full bg-[#ffe600] text-[#0f0f1f] rounded-md py-3 font-['Press_Start_2P'] text-[12px] border-4 border-[#ffe600] shadow-[0_4px_10px_rgba(255,230,0,0.6)] disabled:opacity-60 transition-all duration-200 ease-in-out hover:shadow-[0_6px_15px_rgba(255,230,0,0.8)] hover:scale-105 active:scale-95"
+            >
             {loading ? "CREATING..." : "Create Account"}
           </button>
         </form>
