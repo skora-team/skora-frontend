@@ -1,73 +1,80 @@
-import { Link } from 'react-router-dom';
+import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import type { Lesson } from '../types';
 import clsx from 'clsx';
-import { Lock } from 'lucide-react';
 
 interface LessonNodeProps {
   lesson: Lesson;
   colorTheme: 'yellow' | 'blue' | 'orange';
 }
 
-// These themes apply to ALL states (Locked or Unlocked)
-const themes = {
-  yellow: {
-    bg: 'bg-[#fbbf24]', // Amber-400
-    border: 'border-[#b45309]', // Amber-700
-    text: 'text-black',
-    shadow: 'shadow-[#78350f]',
-  },
-  blue: {
-    bg: 'bg-[#3b82f6]', // Blue-500
-    border: 'border-[#1d4ed8]', // Blue-700
-    text: 'text-white',
-    shadow: 'shadow-[#1e3a8a]',
-  },
-  orange: {
-    bg: 'bg-[#f97316]', // Orange-500
-    border: 'border-[#c2410c]', // Orange-700
-    text: 'text-black',
-    shadow: 'shadow-[#7c2d12]',
-  },
-};
+export function LessonNode({ lesson }: LessonNodeProps) {
+  const navigate = useNavigate();
+  const [isShaking, setIsShaking] = useState(false);
+  const status = lesson.status; 
 
-export function LessonNode({ lesson, colorTheme }: LessonNodeProps) {
-  const isLocked = lesson.status === 'locked';
-  // Always use the theme color (never gray)
-  const theme = themes[colorTheme];
+  const handleClick = () => {
+    if (status === 'locked') return;
+    setIsShaking(true);
+    setTimeout(() => {
+      setIsShaking(false);
+      navigate(`/lessons/${lesson.id}`);
+    }, 500);
+  };
 
-  const NodeContent = (
-    <div
-      className={clsx(
-        // Box Shape
-        'relative flex items-center justify-center w-full min-h-[60px] p-2 mb-4 z-20',
-        'border-4',
-        theme.bg,
-        theme.border,
-        // Text Color
-        theme.text,
-        // Pixel Art Shadow
-        'shadow-[4px_4px_0px_0px_rgba(0,0,0,0.4)]',
-        // Interactive states
-        !isLocked && 'active:translate-y-1 active:shadow-none transition-all duration-75 cursor-pointer hover:brightness-110',
-        // Locked state styling (Dimmed slightly, but still colored)
-        isLocked && 'opacity-90 contrast-[0.9]' 
-      )}
-    >
-      {/* Lock Icon */}
-      {isLocked && <Lock size={16} className="absolute left-2 opacity-50" />}
+  return (
+    <div className="flex flex-col items-center relative z-10 w-full group">
       
-      <span className="text-[10px] uppercase font-bold tracking-widest text-center leading-tight drop-shadow-sm">
-        {lesson.title}
-      </span>
-    </div>
-  );
+      <div 
+        onClick={handleClick}
+        style={{ width: '80px', height: '80px' }} 
+        className={clsx(
+          "relative transition-all duration-200",
+          isShaking ? "animate-shake" : "",
+          // --- THIS IS THE CHANGE ---
+          // It now adds 'animate-bounce-pixel' only when unlocked and not shaking
+          status === 'unlocked' && !isShaking ? "animate-bounce-pixel cursor-pointer hover:scale-110 drop-shadow-xl" : "",
+          status === 'completed' ? "cursor-default" : "",
+          status === 'locked' ? "opacity-60 grayscale contrast-125 cursor-not-allowed" : ""
+        )}
+      >
+        <svg viewBox="0 0 32 32" className="w-full h-full drop-shadow-lg" shapeRendering="crispEdges">
+          <path d="M4 10 h24 v18 h-24 z" fill="#09090b" /> 
+          <path d="M4 10 h24 v-4 h-24 z" fill="#09090b" />
+          <rect x="6" y="10" width="20" height="16" fill="#be123c" />
+          <rect x="6" y="20" width="20" height="2" fill="#881337" />
+          <path d="M6 6 h20 v5 h-20 z" fill="#be123c" /> 
+          <rect x="6" y="8" width="20" height="1" fill="#fb7185" />
+          <rect x="6" y="6" width="4" height="22" fill="#475569" />
+          <rect x="6" y="6" width="1" height="22" fill="#94a3b8" />
+          <rect x="9" y="6" width="1" height="22" fill="#1e293b" />
+          <rect x="22" y="6" width="4" height="22" fill="#475569" />
+          <rect x="22" y="6" width="1" height="22" fill="#94a3b8" />
+          <rect x="25" y="6" width="1" height="22" fill="#1e293b" />
+          <rect x="4" y="11" width="24" height="3" fill="#1e293b" />
+          <rect x="4" y="11" width="24" height="2" fill="#475569" />
+          {status === 'completed' ? (
+             <circle cx="16" cy="12" r="4" fill="#fbbf24" stroke="#78350f" strokeWidth="1" />
+          ) : (
+             <>
+               <path d="M13 10 h6 v8 l-3 3 l-3 -3 z" fill="#fbbf24" />
+               <rect x="14" y="11" width="4" height="4" fill="#fcd34d" />
+               <rect x="15" y="15" width="2" height="3" fill="#000" />
+             </>
+          )}
+          <rect x="4" y="26" width="4" height="2" fill="#09090b" />
+          <rect x="24" y="26" width="4" height="2" fill="#09090b" />
+        </svg>
+      </div>
 
-  // Even if locked, we render the colored box (just not as a link)
-  return isLocked ? (
-    <div className="w-48 select-none grayscale-[0.2]">{NodeContent}</div>
-  ) : (
-    <Link to={`/lessons/${lesson.id}`} className="w-48 focus:outline-none block">
-      {NodeContent}
-    </Link>
+      <div className={clsx(
+        "mt-3 text-xs font-bold text-center leading-tight select-none max-w-[200px] break-words font-sans tracking-wide",
+        status === 'locked' 
+          ? "text-gray-500" 
+          : "text-[#fbbf24] drop-shadow-md" 
+      )}>
+        {lesson.title}
+      </div>
+    </div>
   );
 }

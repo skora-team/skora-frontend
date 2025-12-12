@@ -6,13 +6,33 @@
 
 body {
   margin: 0;
-  /* Dark Blue Background */
-  background-color: #11112b; 
-  /* Subtle Grid Line Pattern */
-  background-image: 
-    linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
-  background-size: 40px 40px;
+  background-color: #1a1a2e; 
   font-family: 'Press Start 2P', cursive;
   -webkit-font-smoothing: none;
+}
+
+/* Shake Animation for chest click */
+@keyframes shake {
+  0%, 100% { transform: translate(0, 0); }
+  25% { transform: translate(-2px, 2px); }
+  50% { transform: translate(2px, -2px); }
+  75% { transform: translate(-2px, -2px); }
+}
+
+.animate-shake {
+  animation: shake 0.3s;
+}
+
+/* --- NEW: Gentle Bounce Animation for Unlocked Chests --- */
+@keyframes bounce-pixel {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-4px); /* Moves the chest up by 4 pixels */
+  }
+}
+
+.animate-bounce-pixel {
+  animation: bounce-pixel 2s infinite ease-in-out; /* A slow, 2-second loop */
 }
