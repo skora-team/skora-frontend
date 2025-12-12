@@ -11,15 +11,16 @@ const Login: React.FC = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError(null);
+
     if (!username || !password) {
       setError("Please fill both fields.");
       return;
     }
+
     try {
       setLoading(true);
-      // TODO: sign in with Supabase / API
       await new Promise((r) => setTimeout(r, 700));
-      navigate("/dashboard"); // change to your route
+      navigate("/dashboard");
     } catch (err: any) {
       setError(err?.message || "Login failed");
     } finally {
@@ -31,15 +32,29 @@ const Login: React.FC = () => {
     <div
       className="min-h-screen flex items-center justify-center px-4"
       style={{
-        backgroundImage: "url('/public/login.gif')",
+        backgroundImage: "url('/login.gif')", // 🔥 FIXED — correct path
         backgroundRepeat: "no-repeat",
         backgroundPosition: "center",
         backgroundAttachment: "fixed",
         backgroundSize: "cover",
       }}
     >
-      <div className="w-full max-w-md bg-[rgba(15,15,31,0.9)] p-8 rounded-xl shadow-[0_0_20px_rgba(255,230,0,0.4)] text-white">
-        <h1 className="font-['Press_Start_2P'] text-[18px] text-[#ffe600] mb-2">Login</h1>
+
+      <div
+        className="
+          w-full max-w-md 
+          bg-[#0f0f1f]                         /* 🔥 SOLID BACKGROUND */
+          p-8 
+          rounded-xl 
+          shadow-[0_0_25px_rgba(203,131,79,0.55)] /* 🔥 NEW GLOW #cb834f */
+          text-white
+        "
+      >
+
+        <h1 className="font-['Press_Start_2P'] text-[18px] text-[#ffe600] mb-2">
+          Login
+        </h1>
+
         <p className="text-sm text-gray-300 mb-6">Welcome Back King!!</p>
 
         <form className="space-y-4" onSubmit={handleSubmit}>
@@ -47,7 +62,9 @@ const Login: React.FC = () => {
             value={username}
             onChange={(e) => setUsername(e.target.value)}
             placeholder="Username or Email"
-            className="w-full bg-[#1e1e2f] border-2 border-[#444] rounded-md px-3 py-2 text-white placeholder:text-gray-400 focus:border-[#ffe600] outline-none"
+            className="w-full bg-[#1e1e2f] border-2 border-[#444] 
+                       rounded-md px-3 py-2 text-white placeholder:text-gray-400 
+                       focus:border-[#ffe600] outline-none"
             required
           />
 
@@ -56,7 +73,9 @@ const Login: React.FC = () => {
             onChange={(e) => setPassword(e.target.value)}
             type="password"
             placeholder="Password"
-            className="w-full bg-[#1e1e2f] border-2 border-[#444] rounded-md px-3 py-2 text-white placeholder:text-gray-400 focus:border-[#ffe600] outline-none"
+            className="w-full bg-[#1e1e2f] border-2 border-[#444] 
+                       rounded-md px-3 py-2 text-white placeholder:text-gray-400 
+                       focus:border-[#ffe600] outline-none"
             required
           />
 
@@ -65,7 +84,19 @@ const Login: React.FC = () => {
           <button
             type="submit"
             disabled={loading}
-            className="w-full bg-[#ffe600] text-[#0f0f1f] rounded-md py-3 font-['Press_Start_2P'] text-[12px] border-4 border-[#ffe600] shadow-[0_4px_10px_rgba(255,230,0,0.6)] disabled:opacity-60 transition-all duration-200 ease-in-out hover:shadow-[0_6px_15px_rgba(255,230,0,0.8)] hover:scale-105 active:scale-95"
+            className="
+              w-full 
+              bg-[#cb834f] /* kept as requested */ 
+              text-[#0f0f1f] 
+              rounded-md py-3 
+              font-['Press_Start_2P'] text-[12px] 
+              border-4 border-[#ff6a00]
+              shadow-[0_4px_10px_rgba(255,106,0,0.6)]
+              disabled:opacity-60 
+              transition-all duration-200 ease-in-out 
+              hover:shadow-[0_6px_15px_rgba(255,106,0,0.8)] 
+              hover:scale-105 active:scale-95
+            "
           >
             {loading ? "Signing in..." : "Login"}
           </button>
@@ -77,6 +108,7 @@ const Login: React.FC = () => {
             Sign up
           </Link>
         </p>
+
       </div>
     </div>
   );

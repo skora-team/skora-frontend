@@ -129,28 +129,29 @@ const Home: React.FC = () => {
   </p>
             {/* GET STARTED BUTTON */}
             <Link
-  to="/video"
-  className="
-    relative
-    inline-block
-    bg-[#F9CF4F]
-    text-black
-    px-5
-    py-1
-    border-3
-    border-[#000000]
-    shadow-[0_4px_0_0_#000]
-    active:shadow-[0_2px_0_0_#000]
-    active:translate-y-0.5
-    hover:bg-[#ffefb5]
-    rounded-none
-    select-none
-    transition-all
-    font-['Press_Start_2P',cursive]
-  "
->
-  Get started
-</Link>
+        to="/video"
+        className="
+        relative
+        inline-block
+        bg-[#F9CF4F]
+        text-black
+        px-5
+        py-1
+        border-3
+        border-[#000000]
+        shadow-[0_4px_0_0_#000]
+        active:shadow-[0_2px_0_0_#000]
+        active:translate-y-0.5
+        hover:bg-[#ffefb5]
+        rounded-none
+        select-none
+        transition-all
+        font-['Press_Start_2P',cursive]
+        delay 1000ms
+        "
+      >
+        Get started
+      </Link>
 
           </div>
         </section>

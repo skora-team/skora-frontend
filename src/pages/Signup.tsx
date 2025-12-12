@@ -45,7 +45,15 @@ const Signup: React.FC = () => {
         backgroundSize: "cover",
       }}
     >
-      <div className="w-full max-w-md bg-[rgba(15,15,31,0.9)] p-8 rounded-xl shadow-[0_0_20px_rgba(255,230,0,0.4)] text-white">
+            <div className="
+  w-full max-w-md 
+  bg-[#0f0f1f]   
+  p-8 
+  rounded-xl 
+  shadow-[0_0_25px_rgba(203,131,79,0.55)] 
+  text-white
+">
+
         <h1 className="font-['Press_Start_2P'] text-[18px] text-[#ffe600] mb-2">
           Sign Up
         </h1>
@@ -93,7 +101,7 @@ const Signup: React.FC = () => {
           <button
             type="submit"
             disabled={loading}
-             className="w-full bg-[#ffe600] text-[#0f0f1f] rounded-md py-3 font-['Press_Start_2P'] text-[12px] border-4 border-[#ffe600] shadow-[0_4px_10px_rgba(255,230,0,0.6)] disabled:opacity-60 transition-all duration-200 ease-in-out hover:shadow-[0_6px_15px_rgba(255,230,0,0.8)] hover:scale-105 active:scale-95"
+              className="w-full bg-[#cb834f] text-[#0f0f1f] rounded-md py-3 font-['Press_Start_2P'] text-[12px] border-4 border-[#ff6a00] shadow-[0_4px_10px_rgba(255,106,0,0.6)] disabled:opacity-60 transition-all duration-200 ease-in-out hover:shadow-[0_6px_15px_rgba(255,106,0,0.8)] hover:scale-105 active:scale-95"
             >
             {loading ? "CREATING..." : "Create Account"}
           </button>
