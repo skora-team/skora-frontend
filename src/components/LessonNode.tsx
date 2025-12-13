@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 import type { Lesson } from "../types";
 import clsx from "clsx";
 
@@ -9,6 +9,26 @@ interface LessonNodeProps {
 
 export function LessonNode({ lesson, isLast }: LessonNodeProps) {
   const [showInfo, setShowInfo] = useState(false);
+  const [isOpening, setIsOpening] = useState(false);
+
+  // 🔊 sound ref
+  const audioRef = useRef<HTMLAudioElement | null>(null);
+
+  const handleOpen = () => {
+    if (lesson.status === "locked") return;
+    if (isOpening) return;
+
+    setIsOpening(true);
+
+    if (audioRef.current) {
+      audioRef.current.currentTime = 0;
+      audioRef.current.play();
+    }
+
+    setTimeout(() => {
+      setIsOpening(false);
+    }, 450);
+  };
 
   return (
     <div
@@ -16,23 +36,25 @@ export function LessonNode({ lesson, isLast }: LessonNodeProps) {
       onMouseEnter={() => setShowInfo(true)}
       onMouseLeave={() => setShowInfo(false)}
     >
+      {/* 🔊 AUDIO */}
+      <audio ref={audioRef} src="/sounds/chest-open.mp3" preload="auto" />
+
       {/* ================= INFO BOX ================= */}
       {showInfo && (
         <div
           className="absolute bottom-full mb-3 z-50 w-[260px]"
           style={{
-            background: "rgba(30, 58, 138, 0.85)", // blue transparent
+            background: "rgba(30, 58, 138, 0.85)",
             borderRadius: "12px",
             padding: "12px",
             boxShadow: "0 12px 30px rgba(0,0,0,0.35)",
             fontFamily: "'Press Start 2P', cursive",
           }}
         >
-          {/* 🔒 LOCK MESSAGE */}
           {lesson.status === "locked" && (
             <div
               style={{
-                background: "rgba(220,38,38,0.35)", // red transparent
+                background: "rgba(220,38,38,0.35)",
                 borderRadius: "8px",
                 padding: "6px 8px",
                 marginBottom: "8px",
@@ -44,12 +66,11 @@ export function LessonNode({ lesson, isLast }: LessonNodeProps) {
             </div>
           )}
 
-          {/* TITLE */}
           <div
             style={{
               fontSize: "12px",
               fontWeight: "bold",
-              color: "#facc15", // yellow
+              color: "#facc15",
               marginBottom: "6px",
               textTransform: "uppercase",
             }}
@@ -57,7 +78,6 @@ export function LessonNode({ lesson, isLast }: LessonNodeProps) {
             {lesson.title}
           </div>
 
-          {/* DESCRIPTION */}
           <div
             style={{
               fontSize: "10px",
@@ -70,33 +90,26 @@ export function LessonNode({ lesson, isLast }: LessonNodeProps) {
         </div>
       )}
 
-      {/* ================= CHEST ================= */}
-      <div
+      {/* ================= CHEST IMAGE ================= */}
+      <img
+        src="/chests/treasure-chest.png"
+        alt="Chest"
+        onClick={handleOpen}
         className={clsx(
-          "transition-all duration-200",
+          "transition-all duration-200 select-none",
           lesson.status === "unlocked" &&
-            "cursor-pointer animate-bounce-pixel hover:scale-110",
+            "cursor-pointer hover:scale-110",
           lesson.status === "locked" &&
-            "opacity-60 grayscale cursor-not-allowed"
+            "opacity-60 grayscale cursor-not-allowed",
+          isOpening && "animate-chest-open"
         )}
-        style={{ width: 96, height: 96 }}
-      >
-        <svg
-          viewBox="0 0 32 32"
-          className="w-full h-full"
-          shapeRendering="crispEdges"
-        >
-          <path d="M4 10 h24 v18 h-24 z" fill="#09090b" />
-          <path d="M4 10 h24 v-4 h-24 z" fill="#09090b" />
-          <rect x="6" y="10" width="20" height="16" fill="#be123c" />
-          <rect x="6" y="20" width="20" height="2" fill="#881337" />
-          <path d="M6 6 h20 v5 h-20 z" fill="#be123c" />
-          <rect x="6" y="8" width="20" height="1" fill="#fb7185" />
-          <rect x="6" y="6" width="4" height="22" fill="#475569" />
-          <rect x="22" y="6" width="4" height="22" fill="#475569" />
-          <path d="M13 10 h6 v8 l-3 3 l-3 -3 z" fill="#fbbf24" />
-        </svg>
-      </div>
+        style={{
+          width: 96,
+          height: 96,
+          imageRendering: "pixelated",
+        }}
+        draggable={false}
+      />
 
       {/* ================= LABEL ================= */}
       <div className="mt-3 text-xs font-bold text-center text-slate-800 max-w-[160px]">

@@ -36,3 +36,27 @@ body {
 .animate-bounce-pixel {
   animation: bounce-pixel 2s infinite ease-in-out; /* A slow, 2-second loop */
 }
+@keyframes chest-open {
+  0% {
+    transform: scale(1);
+  }
+  20% {
+    transform: scale(1.15) rotate(-2deg);
+  }
+  40% {
+    transform: scale(1.1) rotate(2deg);
+  }
+  60% {
+    transform: scale(1.15) rotate(-1deg);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+.animate-chest-open {
+  animation: chest-open 0.45s ease-out;
+}
+.pixelated {
+  image-rendering: pixelated;
+}
