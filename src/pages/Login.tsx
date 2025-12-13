@@ -99,7 +99,7 @@ const Login: React.FC = () => {
         {/* 👻 GHOST + TEXT BUBBLE */}
 <div
   className="
-    hidden md:flex
+    hidden md:flex     // 👈 HERE
     absolute
     top-[18%]
     left-1/2
@@ -110,39 +110,26 @@ const Login: React.FC = () => {
     z-20
   "
 >
-  {/* GHOST */}
   <img
-    src="/public/ghost-Photoroom.png"   //  ghost image
+    src="/ghost.png"
     alt="ghost"
-    className="
-      w-24
-      float-slow
-      image-render
-      drop-shadow-[0_0_20px_rgba(180,180,255,0.45)]
-    "
+    className="w-24 float-slow image-render"
   />
 
-  {/* TEXT BUBBLE */}
-  <div
-    className="
-      bg-[#0b0b12]
-      text-gray-200
-      px-4
-      py-3
-      border-4
-      border-white/20
-      shadow-[0_4px_0_0_#000]
-      font-['Press_Start_2P']
-      text-[10px]
-      leading-relaxed
-      float-slow
-    "
-  >
+  <div className="
+    bg-[#0b0b12]
+    text-gray-200
+    px-4 py-3
+    border-4 border-white/20
+    font-['Press_Start_2P']
+    text-[10px]
+  ">
     Welcome back,
     <br />
     lost soul…
   </div>
 </div>
+
 
         <div
           className="
