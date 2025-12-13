@@ -1,5 +1,4 @@
 // src/types.ts
-
 export type LessonStatus = 'completed' | 'unlocked' | 'locked';
 
 export interface Lesson {

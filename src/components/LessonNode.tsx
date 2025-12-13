@@ -1,3 +1,4 @@
+// src/components/LessonNode.tsx
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import type { Lesson } from '../types';
@@ -6,9 +7,11 @@ import clsx from 'clsx';
 interface LessonNodeProps {
   lesson: Lesson;
   colorTheme: 'yellow' | 'blue' | 'orange';
+  onHover: (lesson: Lesson) => void; 
+  onHoverEnd: () => void;
 }
 
-export function LessonNode({ lesson }: LessonNodeProps) {
+export function LessonNode({ lesson, onHover, onHoverEnd }: LessonNodeProps) {
   const navigate = useNavigate();
   const [isShaking, setIsShaking] = useState(false);
   const status = lesson.status; 
@@ -23,7 +26,11 @@ export function LessonNode({ lesson }: LessonNodeProps) {
   };
 
   return (
-    <div className="flex flex-col items-center relative z-10 w-full group">
+    <div 
+      className="flex flex-col items-center relative z-10 w-full group"
+      onMouseEnter={() => onHover(lesson)}
+      onMouseLeave={onHoverEnd}
+    >
       
       <div 
         onClick={handleClick}
@@ -31,14 +38,13 @@ export function LessonNode({ lesson }: LessonNodeProps) {
         className={clsx(
           "relative transition-all duration-200",
           isShaking ? "animate-shake" : "",
-          // --- THIS IS THE CHANGE ---
-          // It now adds 'animate-bounce-pixel' only when unlocked and not shaking
           status === 'unlocked' && !isShaking ? "animate-bounce-pixel cursor-pointer hover:scale-110 drop-shadow-xl" : "",
           status === 'completed' ? "cursor-default" : "",
           status === 'locked' ? "opacity-60 grayscale contrast-125 cursor-not-allowed" : ""
         )}
       >
         <svg viewBox="0 0 32 32" className="w-full h-full drop-shadow-lg" shapeRendering="crispEdges">
+          {/* ... SVG for chest ... */}
           <path d="M4 10 h24 v18 h-24 z" fill="#09090b" /> 
           <path d="M4 10 h24 v-4 h-24 z" fill="#09090b" />
           <rect x="6" y="10" width="20" height="16" fill="#be123c" />
@@ -67,11 +73,12 @@ export function LessonNode({ lesson }: LessonNodeProps) {
         </svg>
       </div>
 
+      {/* TEXT LABEL: Dark text for light background */}
       <div className={clsx(
         "mt-3 text-xs font-bold text-center leading-tight select-none max-w-[200px] break-words font-sans tracking-wide",
         status === 'locked' 
-          ? "text-gray-500" 
-          : "text-[#fbbf24] drop-shadow-md" 
+          ? "text-slate-400" 
+          : "text-slate-800 drop-shadow-sm" 
       )}>
         {lesson.title}
       </div>

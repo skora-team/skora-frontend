@@ -1,8 +1,6 @@
 // src/mockApi.ts
+import type { Course } from './types';
 
-import type{ Course } from './types';
-
-// This is what the data from your `GET /courses/` endpoint will look like.
 const mockSkillTreeData: Course[] = [
   {
     id: 10,

@@ -2,44 +2,64 @@ import { Lock } from 'lucide-react';
 import type { Lesson } from '../types';
 
 interface InfoPanelProps {
-  lesson: Lesson | null; // It now accepts the whole lesson object or null
+  lesson: Lesson | null;
 }
 
 export function InfoPanel({ lesson }: InfoPanelProps) {
-  // If no lesson is hovered, don't show anything
-  if (!lesson) {
-    return null;
-  }
-
   return (
-    // FIXED: Positioned on the right side of the page
+    // FIX 1: Positioned on the TOP RIGHT corner of the page
     <div 
-      className="fixed top-1/2 -translate-y-1/2 right-0 mr-8 w-96 p-6 
-                 bg-slate-800/90 text-white
-                 rounded-xl shadow-2xl border-2 border-yellow-500/50 backdrop-blur-md
-                 font-sans text-sm
-                 transition-opacity duration-300"
-      style={{ zIndex: 100 }}
+      style={{
+        position: 'fixed',
+        top: '2rem',
+        right: '2rem',
+        width: '24rem',
+        padding: '1.5rem',
+        backgroundColor: 'rgba(255, 255, 255, 0.85)',
+        backdropFilter: 'blur(10px)',
+        borderRadius: '0.75rem',
+        border: '2px solid #334155',
+        boxShadow: '0 10px 30px rgba(0, 0, 0, 0.3)',
+        zIndex: 100,
+        fontFamily: 'sans-serif',
+        // FIX 2: Makes the panel FADE OUT and become unclickable when not hovered
+        opacity: lesson ? 1 : 0,
+        pointerEvents: lesson ? 'auto' : 'none',
+        transition: 'opacity 0.2s ease-in-out',
+      }}
     >
-      {/* FIXED: Title is now yellow */}
-      <h3 className="text-xl font-bold text-yellow-400 mb-4 uppercase tracking-wider">
-        {lesson.title}
-      </h3>
-      
-      {/* --- CONDITIONAL INFO FOR LOCKED CHESTS --- */}
-      {lesson.status === 'locked' && (
-        <div className="mb-4 p-3 bg-red-900/50 border border-red-500/50 rounded-lg flex items-center gap-3">
-          <Lock size={20} className="text-red-300 flex-shrink-0" />
-          <p className="text-red-200 text-xs font-normal normal-case leading-snug">
-            To unlock this chest, please complete the previous mission in this path.
+      {/* 
+        This is the new logic:
+        - If a lesson is hovered, show its details.
+        - If not, this content will be invisible because the whole panel has opacity: 0.
+      */}
+      {lesson ? (
+        <div>
+          {lesson.status === 'locked' && (
+            <div 
+              className="mb-4 p-3 rounded-lg flex items-center gap-3"
+              style={{ backgroundColor: '#7f1d1d', border: '1px solid #dc2626' }}
+            >
+              <Lock size={20} className="text-white flex-shrink-0" />
+              <p className="text-white text-xs font-normal normal-case leading-snug">
+                To unlock this chest, please complete the previous mission in this path.
+              </p>
+            </div>
+          )}
+
+          <h3 className="text-xl font-bold uppercase tracking-wider mb-2" style={{ color: '#facc15' }}>
+            {lesson.title}
+          </h3>
+
+          <p className="leading-relaxed font-normal normal-case" style={{ color: '#111827' }}>
+            {lesson.description}
           </p>
         </div>
+      ) : (
+        // This content is now effectively invisible and unclickable.
+        // It's just a fallback for React.
+        <div></div>
       )}
-
-      {/* The standard description, which is always visible */}
-      <p className="text-gray-300 leading-relaxed font-normal normal-case">
-        {lesson.description}
-      </p>
     </div>
   );
 }
