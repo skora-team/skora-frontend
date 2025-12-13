@@ -1,54 +1,77 @@
 // src/components/InspectorPanel.tsx
-import { Lock } from 'lucide-react';
-import type { Lesson } from '../types';
+import { Lock } from "lucide-react";
+import type { Lesson } from "../types";
 
 interface InspectorPanelProps {
-  lesson: Lesson | null; // It accepts the whole lesson object or null
+  lesson: Lesson | null;
 }
 
 export function InspectorPanel({ lesson }: InspectorPanelProps) {
+  if (!lesson) return null;
+
   return (
-    // This panel is always visible, fixed to the right side
-    <div 
-      className="fixed top-1/2 -translate-y-1/2 right-0 mr-8 w-96 p-6 
-                 bg-slate-800/80 text-white
-                 rounded-xl shadow-2xl border-2 border-yellow-500/30 backdrop-blur-md
-                 font-sans text-sm
-                 transition-all duration-300"
-      style={{ zIndex: 100 }}
+    <div
+      style={{
+        position: "absolute",
+        left: "50%",
+        bottom: "110%",
+        transform: "translateX(-50%)",
+        width: "260px",
+
+        backgroundColor: "rgba(30, 58, 138, 0.85)", // 🔵 blue transparent
+        borderRadius: "14px",                      // 🔥 curved box
+        padding: "14px",
+        border: "2px solid rgba(148,163,184,0.6)",
+        boxShadow: "0 12px 30px rgba(0,0,0,0.35)",
+        backdropFilter: "blur(6px)",
+        zIndex: 50,
+
+        fontFamily: "'Press Start 2P', cursive",
+      }}
     >
-      {/* 
-        This is the new logic:
-        - If a lesson is hovered, show its details.
-        - If not, show a placeholder message.
-      */}
-      {lesson ? (
-        // --- VIEW WHEN A CHEST IS HOVERED ---
-        <div>
-          {lesson.status === 'locked' && (
-            <div className="mb-4 p-3 bg-red-900/50 border border-red-500/50 rounded-lg flex items-center gap-3">
-              <Lock size={20} className="text-red-300 flex-shrink-0" />
-              <p className="text-red-200 text-xs font-normal normal-case leading-snug">
-                To unlock this chest, please complete the previous mission in this path.
-              </p>
-            </div>
-          )}
-
-          <h3 className="text-xl font-bold text-yellow-400 mb-2 uppercase tracking-wider">
-            {lesson.title}
-          </h3>
-
-          <p className="text-gray-300 leading-relaxed font-normal normal-case">
-            {lesson.description}
-          </p>
-        </div>
-      ) : (
-        // --- DEFAULT VIEW WHEN NOTHING IS HOVERED ---
-        <div className="text-center text-slate-400">
-          <p className="font-bold text-lg mb-2">Skill Inspector</p>
-          <p className="text-sm">Hover over a chest to see its details.</p>
+      {/* 🔒 LOCKED MESSAGE */}
+      {lesson.status === "locked" && (
+        <div
+          style={{
+            backgroundColor: "rgba(220,38,38,0.35)", // 🔴 transparent red
+            border: "1px solid rgba(248,113,113,0.6)",
+            borderRadius: "8px",
+            padding: "8px",
+            marginBottom: "10px",
+            display: "flex",
+            gap: "6px",
+            alignItems: "center",
+            fontSize: "9px",
+            color: "#fee2e2",
+          }}
+        >
+          <Lock size={12} />
+          <span>Complete previous mission to unlock</span>
         </div>
       )}
+
+      {/* 🟡 TITLE */}
+      <div
+        style={{
+          color: "#facc15",        // yellow
+          fontSize: "12px",        // 🔽 smaller title
+          marginBottom: "8px",
+          textTransform: "uppercase",
+        }}
+      >
+        {lesson.title}
+      </div>
+
+      {/* 📝 DESCRIPTION */}
+      <div
+        style={{
+          color: "#e5e7eb",
+          fontSize: "9px",         // 🔽 smaller than title
+          lineHeight: "1.6",
+        }}
+      >
+        {lesson.description}
+      </div>
     </div>
   );
 }
