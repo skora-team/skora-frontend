@@ -118,6 +118,51 @@ const Signup: React.FC = () => {
           "
           style={{ imageRendering: "pixelated" }}
         />
+{/* 🚀 ROCKET + TEXT BUBBLE */}
+<div className="
+  hidden md:flex
+  absolute
+  top-[18%]
+  left-1/2
+  -translate-x-1/2
+  -translate-y-1/2
+  items-center
+  gap-4
+  z-20
+">
+
+  {/* ROCKET */}
+  <img
+    src="/Rocket.png"   // <-- your rocket image
+    alt="rocket"
+    className="
+      w-24
+      float-slow
+      image-render
+      drop-shadow-[0_0_18px_rgba(255,203,79,0.6)]
+    "
+  />
+
+  {/* TEXT BUBBLE */}
+  <div
+    className="
+      bg-[#0f0f1f]
+      text-white
+      px-4
+      py-3
+      border-4
+      border-black
+      shadow-[0_4px_0_0_#000]
+      font-['Press_Start_2P']
+      text-[10px]
+      leading-relaxed
+      float-slow
+    "
+  >
+    Ready for launch?
+  </div>
+
+</div>
 
         {/* SIGNUP CARD – CENTER */}
         <div className="w-full max-w-md bg-[#0f0f1f] p-8 rounded-xl shadow-[0_0_25px_rgba(203,131,79,0.55)] text-white relative z-10">

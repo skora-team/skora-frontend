@@ -95,4 +95,16 @@
 .pixel-press {
   animation: pixelPressSmooth 0.45s cubic-bezier(0.25, 0.4, 0.3, 1) forwards;
 }
+@keyframes floatSlow {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+.float-slow {
+  animation: floatSlow 4s ease-in-out infinite;
+}
 
