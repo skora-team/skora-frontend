@@ -96,6 +96,54 @@ const Login: React.FC = () => {
           backgroundSize: "cover",
         }}
       >
+        {/* 👻 GHOST + TEXT BUBBLE */}
+<div
+  className="
+    hidden md:flex
+    absolute
+    top-[18%]
+    left-1/2
+    -translate-x-1/2
+    -translate-y-1/2
+    items-center
+    gap-4
+    z-20
+  "
+>
+  {/* GHOST */}
+  <img
+    src="/public/ghost-Photoroom.png"   //  ghost image
+    alt="ghost"
+    className="
+      w-24
+      float-slow
+      image-render
+      drop-shadow-[0_0_20px_rgba(180,180,255,0.45)]
+    "
+  />
+
+  {/* TEXT BUBBLE */}
+  <div
+    className="
+      bg-[#0b0b12]
+      text-gray-200
+      px-4
+      py-3
+      border-4
+      border-white/20
+      shadow-[0_4px_0_0_#000]
+      font-['Press_Start_2P']
+      text-[10px]
+      leading-relaxed
+      float-slow
+    "
+  >
+    Welcome back,
+    <br />
+    lost soul…
+  </div>
+</div>
+
         <div
           className="
             w-full max-w-md
