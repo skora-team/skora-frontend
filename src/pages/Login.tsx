@@ -111,7 +111,7 @@ const Login: React.FC = () => {
   "
 >
   <img
-    src="/ghost.png"
+    src="public/ghost-Photoroom.png"
     alt="ghost"
     className="w-24 float-slow image-render"
   />
@@ -123,6 +123,7 @@ const Login: React.FC = () => {
     border-4 border-white/20
     font-['Press_Start_2P']
     text-[10px]
+    float-slow
   ">
     Welcome back,
     <br />
