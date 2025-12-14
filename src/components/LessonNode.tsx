@@ -37,7 +37,7 @@ export function LessonNode({ lesson, isLast }: LessonNodeProps) {
       onMouseLeave={() => setShowInfo(false)}
     >
       {/* 🔊 AUDIO */}
-      <audio ref={audioRef} src="/sounds/chest-open.mp3" preload="auto" />
+      <audio ref={audioRef} src="/public/chest-open.mp3" preload="auto" />
 
       {/* ================= INFO BOX ================= */}
       {showInfo && (
