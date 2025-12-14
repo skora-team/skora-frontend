@@ -18,7 +18,7 @@ const CourseCard: React.FC<CourseCardProps> = ({
 }) => {
   return (
     <Link
-      to="/skills"   // 👈 THIS links to SkillTreePage.tsx
+      to="/video"   // 👈 THIS links to SkillTreePage.tsx
       className="relative w-96 max-w-xs md:max-w-sm lg:max-w-md bg-slate-950 rounded-2xl overflow-hidden border border-white border-opacity-10 shadow-2xl transition-all duration-200 hover:-translate-y-4 hover:shadow-3xl hover:border-white hover:border-opacity-20 block no-underline"
     >
       <div className="relative h-80 overflow-hidden">
