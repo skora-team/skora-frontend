@@ -4,6 +4,14 @@ export default {
     "./index.html",
     "./src/**/*.{js,ts,jsx,tsx}",
   ],
+
+  // 🔥 THIS FIXES YOUR ISSUE
+  safelist: [
+    "animate-chest-open",
+    "animate-bounce-pixel",
+    "animate-shake",
+  ],
+
   theme: {
     extend: {
       fontFamily: {
@@ -13,10 +21,9 @@ export default {
         skora: {
           'dark-navy': '#0f0f1a',
           'neon-orange': '#ff7b00',
-          // These match your class names:
-          'python-main': '#FFD700', // Yellow
-          'r-main': '#3b82f6',      // Blue
-          'sql-main': '#d97706',    // Brown/Orange
+          'python-main': '#FFD700',
+          'r-main': '#3b82f6',
+          'sql-main': '#d97706',
         }
       },
       boxShadow: {
@@ -28,4 +35,4 @@ export default {
     },
   },
   plugins: [],
-}
+};

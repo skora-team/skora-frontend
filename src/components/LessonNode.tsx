@@ -91,25 +91,26 @@ export function LessonNode({ lesson, isLast }: LessonNodeProps) {
       )}
 
       {/* ================= CHEST IMAGE ================= */}
-      <img
-        src="/chests/treasure-chest.png"
-        alt="Chest"
-        onClick={handleOpen}
-        className={clsx(
-          "transition-all duration-200 select-none",
-          lesson.status === "unlocked" &&
-            "cursor-pointer hover:scale-110",
-          lesson.status === "locked" &&
-            "opacity-60 grayscale cursor-not-allowed",
-          isOpening && "animate-chest-open"
-        )}
-        style={{
-          width: 96,
-          height: 96,
-          imageRendering: "pixelated",
-        }}
-        draggable={false}
-      />
+     <img
+  src="/chests/treasure-chest.png"
+  alt="Chest"
+  onClick={handleOpen}
+  className={clsx(
+    "transition-all duration-200 select-none",
+    lesson.status === "unlocked" &&
+      "cursor-pointer hover:scale-110 animate-bounce-pixel",
+    lesson.status === "locked" &&
+      "opacity-60 grayscale cursor-not-allowed",
+    isOpening && "animate-chest-open"
+  )}
+  style={{
+    width: 96,
+    height: 96,
+    imageRendering: "pixelated",
+  }}
+  draggable={false}
+/>
+
 
       {/* ================= LABEL ================= */}
       <div className="mt-3 text-xs font-bold text-center text-slate-800 max-w-[160px]">
