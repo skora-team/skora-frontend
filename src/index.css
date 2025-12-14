@@ -1,3 +1,63 @@
+@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
+
+
+@tailwind utilities;
+
+body {
+  margin: 0;
+  background-color: #1a1a2e; 
+  -webkit-font-smoothing: none;
+}
+
+/* Shake Animation for chest click */
+@keyframes shake {
+  0%, 100% { transform: translate(0, 0); }
+  25% { transform: translate(-2px, 2px); }
+  50% { transform: translate(2px, -2px); }
+  75% { transform: translate(-2px, -2px); }
+}
+
+.animate-shake {
+  animation: shake 0.3s;
+}
+
+/* --- NEW: Gentle Bounce Animation for Unlocked Chests --- */
+@keyframes bounce-pixel {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-4px); /* Moves the chest up by 4 pixels */
+  }
+}
+
+.animate-bounce-pixel {
+  animation: bounce-pixel 2s infinite ease-in-out; /* A slow, 2-second loop */
+}
+@keyframes chest-open {
+  0% {
+    transform: scale(1);
+  }
+  20% {
+    transform: scale(1.15) rotate(-2deg);
+  }
+  40% {
+    transform: scale(1.1) rotate(2deg);
+  }
+  60% {
+    transform: scale(1.15) rotate(-1deg);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+.animate-chest-open {
+  animation: chest-open 0.45s ease-out;
+}
+.pixelated {
+  image-rendering: pixelated;
+}
 @import "tailwindcss";
 
 @layer base {
@@ -108,3 +168,6 @@
   animation: floatSlow 4s ease-in-out infinite;
 }
 
+.pixel-font {
+  font-family: 'Press Start 2P', cursive;
+}

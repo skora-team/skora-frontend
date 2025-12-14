@@ -1,30 +1,24 @@
-import React from "react";
 import { Routes, Route } from "react-router-dom";
+
 import Home from "./Home";
-import About from "./about"; // or "./About" depending on your file name
-import VideoPage from "./pages/VideoPage";
+import About from "./pages/About";
 import Login from "./pages/Login";
 import Signup from "./pages/Signup";
+import VideoPage from "./pages/VideoPage";
+import SkillTreePage from "./pages/SkillTreePage";
 
-const App: React.FC = () => {
+export default function App() {
   return (
     <Routes>
-      {/* Landing page */}
       <Route path="/" element={<Home />} />
-
-      {/* About page */}
       <Route path="/about" element={<About />} />
-
-      {/* Video page */}
+      <Route path="/login" element={<Login />} />
+      <Route path="/signup" element={<Signup />} />
       <Route path="/video" element={<VideoPage />} />
 
-      {/* Login page */}
-      <Route path="/login" element={<Login />} />
-
-      {/* Signup page */}
-      <Route path="/signup" element={<Signup />} />
+      {/* Skill Tree routes */}
+      <Route path="/skills" element={<SkillTreePage />} />
+      <Route path="/skill-tree" element={<SkillTreePage />} />
     </Routes>
   );
-};
-
-export default App;
+}
