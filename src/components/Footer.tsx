@@ -29,14 +29,37 @@ const Footer: React.FC = () => {
         </div>
 
         {/* LEARN */}
-        <div>
+        <div className="flex flex-col">
           <h3 className="text-white font-semibold mb-4">LEARN</h3>
           <ul className="space-y-2 text-sm">
-            <li>All Courses</li>
-            <Link to="/signup">AIML</Link>
-            <Link to="/signup">Python</Link>
-            <Link to="/signup">R Programming</Link>
-            <Link to="/signup">SQL</Link>
+            <Link
+  to="/signup"
+  target="_blank"
+  rel="noopener noreferrer"
+  className="block hover:text-white transition"
+>
+  Python
+</Link>
+
+<Link
+  to="/signup"
+  target="_blank"
+  rel="noopener noreferrer"
+  className="block hover:text-white transition"
+>
+  R Program
+</Link>
+
+<Link
+  to="/signup"
+  target="_blank"
+  rel="noopener noreferrer"
+  className="block hover:text-white transition"
+>
+  SQL
+</Link>
+
+
           </ul>
         </div>
 
