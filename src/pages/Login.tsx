@@ -43,39 +43,7 @@ const Login: React.FC = () => {
           </Link>
 
           <ul className="flex items-center gap-6 text-sm">
-            {/* LEARN */}
-            <li className="relative group cursor-pointer">
-              <span className="text-gray-300 hover:text-yellow-300">
-                Learn ▾
-              </span>
-              <div className="absolute hidden group-hover:block mt-2 w-40 bg-[#F9CF4F] rounded-lg border-2 border-black shadow-[0_6px_0_0_#000]">
-                <a className="block px-4 py-2.5 text-sm text-black hover:bg-[#ffefb5]">
-                  Python
-                </a>
-                <a className="block px-4 py-2.5 text-sm text-black hover:bg-[#ffefb5]">
-                  R Program
-                </a>
-                <a className="block px-4 py-2.5 text-sm text-black hover:bg-[#ffefb5]">
-                  SQL
-                </a>
-              </div>
-            </li>
-
-            {/* PRACTICE */}
-            <li className="relative group cursor-pointer">
-              <span className="text-gray-300 hover:text-yellow-300">
-                Practice ▾
-              </span>
-              <div className="absolute hidden group-hover:block mt-2 w-40 bg-[#F9CF4F] rounded-lg border-2 border-black shadow-[0_6px_0_0_#000]">
-                <a className="block px-4 py-2.5 text-sm text-black hover:bg-[#ffefb5]">
-                  Quizzes
-                </a>
-                <a className="block px-4 py-2.5 text-sm text-black hover:bg-[#ffefb5]">
-                  Exercises
-                </a>
-              </div>
-            </li>
-
+           
             <li>
               <Link to="/" className="hover:text-yellow-300 text-gray-300">
                 Home
