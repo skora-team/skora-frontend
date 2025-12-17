@@ -141,10 +141,10 @@ const VideoOverlay: React.FC<VideoOverlayProps> = ({
             setVisible(false);
             navigate("/signup");
           }}
-        />
-
-        {/* PIXEL MUTE BUTTON — BOTTOM RIGHT (icon only) */}
-        <button
+        />  
+      </div>
+      {/* MUTE/UNMUTE BUTTON — BOTTOM RIGHT */}
+       <button
           id="mute-btn"
           onClick={handleMuteClick}
           aria-label={muted ? "Unmute video" : "Mute video"}
@@ -171,7 +171,6 @@ const VideoOverlay: React.FC<VideoOverlayProps> = ({
             <FaVolumeUp className="text-black text-2xl" />
           )}
         </button>
-      </div>
     </div>
   );
 };
