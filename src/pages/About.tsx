@@ -66,20 +66,11 @@ const About: React.FC = () => {
             <li className="relative group cursor-pointer">
               <span className="text-gray-300 hover:text-yellow-300">Learn ▾</span>
               <div className="absolute hidden group-hover:block mt-2 w-40 bg-black/90 rounded-lg border border-white/10 shadow-lg">
-                <a className="block px-4 py-2.5 text-sm hover:bg-white/10">Python</a>
-                <a className="block px-4 py-2.5 text-sm hover:bg-white/10">R Program</a>
-                <a className="block px-4 py-2.5 text-sm hover:bg-white/10">SQL</a>
+                <Link to="/signup" className="block px-4 py-2.5 text-sm hover:bg-white/10">Python</Link>
+                <Link to="/signup" className="block px-4 py-2.5 text-sm hover:bg-white/10">R Program</Link>
+                <Link to="/signup" className="block px-4 py-2.5 text-sm hover:bg-white/10">SQL</Link>
               </div>
             </li>
-
-            <li className="relative group cursor-pointer">
-              <span className="text-gray-300 hover:text-yellow-300">Practice ▾</span>
-              <div className="absolute hidden group-hover:block mt-2 w-40 bg-black/90 rounded-lg border border-white/10 shadow-lg">
-                <a className="block px-4 py-2.5 text-sm hover:bg-white/10">Quizzes</a>
-                <a className="block px-4 py-2.5 text-sm hover:bg-white/10">Exercises</a>
-              </div>
-            </li>
-
             <li>
               <Link to="/" className="hover:text-yellow-300">Home</Link>
             </li>
