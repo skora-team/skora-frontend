@@ -1,6 +1,9 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 
+// BACKEND URL
+const BASE_URL = "https://skora-backend.onrender.com";
+
 const Login: React.FC = () => {
   const navigate = useNavigate();
   const [username, setUsername] = useState("");
@@ -19,10 +22,33 @@ const Login: React.FC = () => {
 
     try {
       setLoading(true);
-      await new Promise((r) => setTimeout(r, 700));
-      navigate("/dashboard");
+
+      // 1. API CALL TO THE JWT ENDPOINT
+      const response = await fetch(`${BASE_URL}/login-jwt/`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        // We use 'login' as the key because your backend docs require it
+        body: JSON.stringify({ 
+          login: username, 
+          password: password 
+        }),
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        // 2. SAVE TOKEN & REDIRECT
+        localStorage.setItem("token", data.access_token);
+        console.log("Login Success!");
+        navigate("/dashboard"); // Redirect to dashboard
+      } else {
+        // Handle Backend Errors
+        setError(data.detail || "Invalid credentials. Please try again.");
+      }
     } catch (err: any) {
-      setError(err?.message || "Login failed");
+      setError("Connection error. Is the server running?");
     } finally {
       setLoading(false);
     }
@@ -43,7 +69,6 @@ const Login: React.FC = () => {
           </Link>
 
           <ul className="flex items-center gap-6 text-sm">
-           
             <li>
               <Link to="/" className="hover:text-yellow-300 text-gray-300">
                 Home
@@ -64,42 +89,42 @@ const Login: React.FC = () => {
           backgroundSize: "cover",
         }}
       >
-        {/* 👻 GHOST + TEXT BUBBLE */}
-<div
-  className="
-    hidden md:flex     // 👈 HERE
-    absolute
-    top-[18%]
-    left-1/2
-    -translate-x-1/2
-    -translate-y-1/2
-    items-center
-    gap-4
-    z-20
-  "
->
-  <img
-    src="public/ghost-Photoroom.png"
-    alt="ghost"
-    className="w-24 float-slow image-render"
-  />
+        {/* 👻 GHOST + TEXT BUBBLE (Kept exactly as you had it) */}
+        <div
+          className="
+            hidden md:flex
+            absolute
+            top-[18%]
+            left-1/2
+            -translate-x-1/2
+            -translate-y-1/2
+            items-center
+            gap-4
+            z-20
+          "
+        >
+          <img
+            src="/ghost-Photoroom.png" 
+            alt="ghost"
+            className="w-24 float-slow image-render"
+          />
 
-  <div className="
-    bg-[#0b0b12]
-    text-gray-200
-    px-4 py-3
-    border-4 border-white/20
-    font-['Press_Start_2P']
-    text-[10px]
-    float-slow
-  ">
-    Welcome back,
-    <br />
-    lost soul…
-  </div>
-</div>
+          <div className="
+            bg-[#0b0b12]
+            text-gray-200
+            px-4 py-3
+            border-4 border-white/20
+            font-['Press_Start_2P']
+            text-[10px]
+            float-slow
+          ">
+            Welcome back,
+            <br />
+            lost soul…
+          </div>
+        </div>
 
-
+        {/* LOGIN CARD */}
         <div
           className="
             w-full max-w-md
@@ -151,7 +176,7 @@ const Login: React.FC = () => {
                 shadow-[0_4px_10px_rgba(255,106,0,0.6)]
                 disabled:opacity-60
                 transition-all duration-200
-                hover:shadow-[0_6px_15px_rgba(255,106,0,0.8)]
+                hover:shadow-[0_6px_15_rgba(255,106,0,0.8)]
                 hover:scale-105 active:scale-95
               "
             >

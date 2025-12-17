@@ -1,6 +1,9 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 
+// BACKEND URL
+const BASE_URL = "https://skora-backend.onrender.com";
+
 const Signup: React.FC = () => {
   const navigate = useNavigate();
   const [username, setUsername] = useState("");
@@ -14,6 +17,7 @@ const Signup: React.FC = () => {
     e.preventDefault();
     setError(null);
 
+    // 1. Validation
     if (!username || !email || !password) {
       setError("Please fill all required fields.");
       return;
@@ -25,10 +29,32 @@ const Signup: React.FC = () => {
 
     try {
       setLoading(true);
-      await new Promise((r) => setTimeout(r, 900));
-      navigate("/signup-success");
+      
+      // 2. API CALL TO RENDER
+      const response = await fetch(`${BASE_URL}/register/`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          username: username,
+          email: email,
+          password: password,
+        }),
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        // 3. SUCCESS - Redirect to dashboard
+        console.log("Signup Successful");
+        navigate("/dashboard"); 
+      } else {
+        // Handle Backend Errors
+        setError(data.detail || "Signup failed. Try again.");
+      }
     } catch (err: any) {
-      setError(err?.message || "Signup failed");
+      setError("Network error. Is the server running?");
     } finally {
       setLoading(false);
     }
@@ -37,26 +63,19 @@ const Signup: React.FC = () => {
   return (
     <>
       {/* ================= NAVBAR ================= */}
-      {/* NAVBAR */}
-            <nav className="w-full px-[7vw] py-3.5 flex items-center justify-between bg-black/60 backdrop-blur border-b border-white/10 fixed top-0 left-0 right-0 z-50">
-              <div className="flex items-center gap-10">
-                <Link to="/" className="flex items-center gap-3 font-bold text-lg">
-                  <img src="/coin.png" className="w-[32px] h-[45px] image-render transition-transform duration-700 hover:-translate-y-1 hover:rotate-[360deg]" alt="coin" />
-                  <img src="/logo.png" className="h-8" alt="logo" />
-                </Link>
-      
-                {/* NAV LINKS */}
-                <ul className="flex items-center gap-6 text-sm">
-                
-      
-                  <li>
-                    <Link to="/" className="hover:text-yellow-300 text-gray-300">Home</Link>
-                  </li>
-                </ul>
-              </div>
-
-        
-            </nav>
+      <nav className="w-full px-[7vw] py-3.5 flex items-center justify-between bg-black/60 backdrop-blur border-b border-white/10 fixed top-0 left-0 right-0 z-50">
+        <div className="flex items-center gap-10">
+          <Link to="/" className="flex items-center gap-3 font-bold text-lg">
+            <img src="/coin.png" className="w-[32px] h-[45px] image-render transition-transform duration-700 hover:-translate-y-1 hover:rotate-[360deg]" alt="coin" />
+            <img src="/logo.png" className="h-8" alt="logo" />
+          </Link>
+          <ul className="flex items-center gap-6 text-sm">
+            <li>
+              <Link to="/" className="hover:text-yellow-300 text-gray-300">Home</Link>
+            </li>
+          </ul>
+        </div>
+      </nav>
 
       {/* ================= PAGE ================= */}
       <div
@@ -96,58 +115,46 @@ const Signup: React.FC = () => {
           "
           style={{ imageRendering: "pixelated" }}
         />
-{/* 🚀 ROCKET + TEXT BUBBLE */}
-<div className="
-  hidden md:flex
-  absolute
-  top-[18%]
-  left-1/2
-  -translate-x-1/2
-  -translate-y-1/2
-  items-center
-  gap-4
-  z-20
-">
 
-  {/* ROCKET */}
-  <img
-    src="/Rocket.png"   // <-- your rocket image
-    alt="rocket"
-    className="
-      w-24
-      float-slow
-      image-render
-      drop-shadow-[0_0_18px_rgba(255,203,79,0.6)]
-    "
-  />
-
-  {/* TEXT BUBBLE */}
-  <div
-    className="
-      bg-[#0f0f1f]
-      text-white
-      px-4
-      py-3
-      border-4
-      border-black
-      shadow-[0_4px_0_0_#000]
-      font-['Press_Start_2P']
-      text-[10px]
-      leading-relaxed
-      float-slow
-    "
-  >
-    Ready for launch?
-  </div>
-
-</div>
+        {/* 🚀 ROCKET + TEXT BUBBLE */}
+        <div className="
+          hidden md:flex
+          absolute
+          top-[18%]
+          left-1/2
+          -translate-x-1/2
+          -translate-y-1/2
+          items-center
+          gap-4
+          z-20
+        ">
+          <img
+            src="/Rocket.png"
+            alt="rocket"
+            className="w-24 float-slow image-render drop-shadow-[0_0_18px_rgba(255,203,79,0.6)]"
+          />
+          <div className="
+            bg-[#0f0f1f]
+            text-white
+            px-4
+            py-3
+            border-4
+            border-black
+            shadow-[0_4px_0_0_#000]
+            font-['Press_Start_2P']
+            text-[10px]
+            leading-relaxed
+            float-slow
+          ">
+            Ready for launch?
+          </div>
+        </div>
 
         {/* SIGNUP CARD – CENTER */}
         <div className="w-full max-w-md bg-[#0f0f1f] p-8 rounded-xl shadow-[0_0_25px_rgba(203,131,79,0.55)] text-white relative z-10">
           <h1 className="font-['Press_Start_2P'] text-[18px] text-[#ffe600] mb-2">
             Sign Up
           </h1>
-
           <p className="text-sm text-gray-300 mb-6">
             Begin your Skora journey
           </p>
@@ -160,7 +167,6 @@ const Signup: React.FC = () => {
               className="w-full bg-[#1e1e2f] border-2 border-[#444] rounded-md px-3 py-2 text-white placeholder:text-gray-400 focus:border-[#ffe600] outline-none"
               required
             />
-
             <input
               value={email}
               onChange={(e) => setEmail(e.target.value)}
@@ -169,7 +175,6 @@ const Signup: React.FC = () => {
               className="w-full bg-[#1e1e2f] border-2 border-[#444] rounded-md px-3 py-2 text-white placeholder:text-gray-400 focus:border-[#ffe600] outline-none"
               required
             />
-
             <input
               value={password}
               onChange={(e) => setPassword(e.target.value)}
@@ -178,7 +183,6 @@ const Signup: React.FC = () => {
               className="w-full bg-[#1e1e2f] border-2 border-[#444] rounded-md px-3 py-2 text-white placeholder:text-gray-400 focus:border-[#ffe600] outline-none"
               required
             />
-
             <input
               value={confirmPass}
               onChange={(e) => setConfirmPass(e.target.value)}
