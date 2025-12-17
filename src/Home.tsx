@@ -29,35 +29,17 @@ const Home: React.FC = () => {
                 Learn ▾
               </a>
               <div className="absolute left-0 top-8 bg-gray-900 w-40 rounded-lg hidden group-hover:block z-10">
-                <a href="#" className="block px-4 py-2.5 text-white hover:bg-gray-700">
+                <Link to="/signup" className="block px-4 py-2.5 text-white hover:bg-gray-700">
                   Python
-                </a>
-                <a href="#" className="block px-4 py-2.5 text-white hover:bg-gray-700">
+                </Link>
+                <Link to="/signup" className="block px-4 py-2.5 text-white hover:bg-gray-700">
                   R program
-                </a>
-                <a href="#" className="block px-4 py-2.5 text-white hover:bg-gray-700">
+                </Link>
+                <Link to="/signup" className="block px-4 py-2.5 text-white hover:bg-gray-700">
                   SQL
-                </a>
+                </Link>
               </div>
-            </li>
-
-            {/* PRACTICE DROPDOWN */}
-            <li className="relative group">
-              <a
-                href="#"
-                className="text-white text-base font-medium hover:text-yellow-400"
-              >
-                Practice ▾
-              </a>
-              <div className="absolute left-0 top-8 bg-gray-900 w-40 rounded-lg hidden group-hover:block z-10">
-                <a href="#" className="block px-4 py-2.5 text-white hover:bg-gray-700">
-                  Quizzes
-                </a>
-                <a href="#" className="block px-4 py-2.5 text-white hover:bg-gray-700">
-                  Exercises
-                </a>
-              </div>
-            </li>
+            </li> 
           </ul>
         </div>
 

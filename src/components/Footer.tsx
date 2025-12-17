@@ -28,25 +28,15 @@ const Footer: React.FC = () => {
           </ul>
         </div>
 
-        {/* PRACTICE */}
-        <div>
-          <h3 className="text-white font-semibold mb-4">PRACTICE</h3>
-          <ul className="space-y-2 text-sm">
-            <li>Challenges</li>
-            <li>Projects</li>
-            <li>Quizzes</li>
-          </ul>
-        </div>
-
         {/* LEARN */}
         <div>
           <h3 className="text-white font-semibold mb-4">LEARN</h3>
           <ul className="space-y-2 text-sm">
             <li>All Courses</li>
-            <li>AIML</li>
-            <li>Python</li>
-            <li>R Programming</li>
-            <li>SQL</li>
+            <Link to="/signup">AIML</Link>
+            <Link to="/signup">Python</Link>
+            <Link to="/signup">R Programming</Link>
+            <Link to="/signup">SQL</Link>
           </ul>
         </div>
 
