@@ -1,12 +1,13 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import { FaGithub, FaInstagram } from "react-icons/fa";
+import { useEffect } from "react";
 
 const team = [
   { img: "/chish.png", name: "@Chish", role: "Founder & Backend", bio: "Founding member and Backend Engineer", github: "https://github.com/chishxd", insta: "https://www.instagram.com/chishxd/" },
   { img: "/Muinn.png", name: "@Muin", role: "Backend Engineer", bio: "Creates Quizzes and Training model.", github: "https://github.com/muin-15" },
   { img: "/omkarr.png", name: "@Omkarr", role: "Frontend Developer", bio: "Leader of Frontend and design.", github: "https://github.com/omkarshinde7613", insta: "https://www.instagram.com/shinde_omkar_7613/" },
-  { img: "/Amannn.png", name: "@Aman", role: "Frontend Developer", bio: "Making the Face of the website.", github: "https://github.com/AmanBachche", insta: "https://www.instagram.com/aman__bachche77/" },
+  { img: "/Amannn.png", name: "@Aman", role: "Frontend Developer", bio: "Makes UI that hit hard!!.", github: "https://github.com/AmanBachche", insta: "https://www.instagram.com/aman__bachche77/" },
   { img: "/rihannn.png", name: "@rihan", role: "Community Manager", bio: "Helping gather and documentation.", github: "https://github.com/rihanjamadar", insta: "https://www.instagram.com/rihan.jamadar353/" },
   { img: "/virajjj.png", name: "@Viraj", role: "Assistant Community Manager", bio: "Likes Banging small things", insta: "https://www.instagram.com/viraj_patil9332/" },
   { img: "/tson.png", name: "@Tyson", role: "Team Mascot", bio: "The Greatest Dog of All Time" },
@@ -18,6 +19,7 @@ const About: React.FC = () => {
   const [shuraVisible, setShuraVisible] = useState(false);
 
   useEffect(() => {
+    window.scrollTo(0, 0); // Scroll to top on mount
     const node = shuraRef.current;
     if (!node) return;
 
