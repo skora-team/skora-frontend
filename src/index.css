@@ -1,0 +1,48 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&family=Press+Start+2P&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    /* LIGHT MODE */
+    --bg-main: #f8fafc;
+    --bg-sidebar: #ffffff;
+    --border-color: #e2e8f0;
+    --text-main: #0f172a;
+    --text-muted: #64748b;
+    --accent: #0284c7;
+    --accent-glow: rgba(2, 132, 199, 0.1);
+  }
+
+  .dark {
+    /* DARK MODE */
+    --bg-main: #050510;
+    --bg-sidebar: #0a0a14;
+    --border-color: #2a2a40;
+    --text-main: #ffffff;
+    --text-muted: #94a3b8;
+    --accent: #00f3ff;
+    --accent-glow: rgba(0, 243, 255, 0.1);
+  }
+}
+
+body {
+  background-color: var(--bg-main);
+  color: var(--text-main);
+  font-family: 'Inter', sans-serif;
+  transition: background-color 0.3s, color 0.3s;
+}
+
+/* Dark Mode Scanlines */
+.dark body::before {
+  content: " ";
+  display: block;
+  position: absolute;
+  top: 0; left: 0; bottom: 0; right: 0;
+  background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06));
+  z-index: 50;
+  background-size: 100% 2px, 3px 100%;
+  pointer-events: none;
+}
