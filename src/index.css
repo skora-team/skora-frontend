@@ -171,3 +171,74 @@ body {
 .pixel-font {
   font-family: 'Press Start 2P', cursive;
 }
+
+@layer base {
+  :root {
+    /* LIGHT MODE */
+    --bg-main: #f8fafc;
+    --bg-sidebar: #ffffff;
+    --border-color: #e2e8f0;
+    --text-main: #0f172a;
+    --text-muted: #64748b;
+    --accent: #0284c7;
+    --accent-glow: rgba(2, 132, 199, 0.1);
+  }
+
+  .dark {
+    /* DARK MODE */
+    --bg-main: #050510;
+    --bg-sidebar: #0a0a14;
+    --border-color: #2a2a40;
+    --text-main: #ffffff;
+    --text-muted: #94a3b8;
+    --accent: #00f3ff;
+    --accent-glow: rgba(0, 243, 255, 0.1);
+  }
+}
+
+body {
+  background-color: var(--bg-main);
+  color: var(--text-main);
+  font-family: 'Inter', sans-serif;
+  transition: background-color 0.3s, color 0.3s;
+}
+#root {
+ 
+  margin: 0 auto;
+
+  text-align: center;
+}
+
+.logo {
+  height: 6em;
+  padding: 1.5em;
+  will-change: filter;
+  transition: filter 300ms;
+}
+.logo:hover {
+  filter: drop-shadow(0 0 2em #646cffaa);
+}
+.logo.react:hover {
+  filter: drop-shadow(0 0 2em #61dafbaa);
+}
+
+@keyframes logo-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  a:nth-of-type(2) .logo {
+    animation: logo-spin infinite 20s linear;
+  }
+}
+
+
+
+.read-the-docs {
+  color: #888;
+}
