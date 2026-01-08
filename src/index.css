@@ -168,10 +168,6 @@ body {
   animation: floatSlow 4s ease-in-out infinite;
 }
 
-.pixel-font {
-  font-family: 'Press Start 2P', cursive;
-}
-
 @layer base {
   :root {
     /* LIGHT MODE */
@@ -241,4 +237,7 @@ body {
 
 .read-the-docs {
   color: #888;
+}
+.pixel-font {
+  font-family: 'Press Start 2P', cursive;
 }

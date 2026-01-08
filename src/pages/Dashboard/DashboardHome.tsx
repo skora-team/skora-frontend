@@ -55,9 +55,9 @@ export function DashboardHome() {
 
   return (
     <DashboardLayout>
-      <header className="mb-12 border-b border-[var(--border-color)] pb-6">
-        <h2 className="text-4xl font-pixel text-[var(--text-main)] mb-4 leading-tight">
-          WELCOME <span className="text-[var(--accent)]">OPERATOR</span>
+      <header className="mb-12 border-b border-[var(--border-color)] pb-6 pixel-font">
+        <h2 className="text-4xl text-[var(--text-main)] mb-4 leading-tight pixel-font">
+          WELCOME <span className="text-[var(--accent)] ">OPERATOR</span>
         </h2>
         <p className="text-[var(--text-muted)] font-mono text-sm">
           // SELECT A TRAINING MODULE TO CONTINUE
