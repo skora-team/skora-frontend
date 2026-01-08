@@ -152,12 +152,10 @@ export function SettingsPage() {
   return (
     <DashboardLayout>
       <header className="mb-12 border-b border-[var(--border-color)] pb-6 text-center">
-        <h2 className="text-5xl font-pixel text-[var(--text-main)] uppercase leading-none tracking-tighter">
+        <h2 className="text-5xl font-pixel text-[var(--text-main)] uppercase leading-none tracking-tighter pixel-font">
           Operator <span className="text-[var(--accent)]">Profile</span>
         </h2>
-        <div className="mt-2 text-[var(--text-muted)] font-mono text-[10px] uppercase tracking-[0.4em]">
-          // biometric_link: encrypted_session_001
-        </div>
+       
       </header>
 
       <div className="max-w-5xl grid grid-cols-1 lg:grid-cols-12 gap-8">
@@ -193,24 +191,16 @@ export function SettingsPage() {
             <div className="absolute -top-3 -left-3 bg-[var(--bg-main)] border-2 border-[var(--border-color)] p-1 text-[var(--accent)]"><Zap size={20} /></div>
             
             <h3 className="text-xs font-pixel text-[var(--text-main)] mb-12 uppercase opacity-70 tracking-widest flex items-center gap-2">
-              // Neural_Module_Sync_Diagnostics
+              // CORE ABILITY UNLOCKING
             </h3>
 
             <div className="space-y-4">
-              <TacticalBar label="Python_Core" percent={progressData.python.percent} icon={Code2} courseId={progressData.python.id} />
+              <TacticalBar label="Python_Core"  icon={Code2} courseId={progressData.python.id} />
               <TacticalBar label="SQL_Databases" percent={progressData.sql.percent} icon={Database} courseId={progressData.sql.id} />
               <TacticalBar label="R_Analytics" percent={progressData.r.percent} icon={Terminal} courseId={progressData.r.id} />
             </div>
 
-            <div className="mt-16 p-5 bg-orange-500/5 border-2 border-orange-500/20 rounded flex items-center gap-5">
-              <div className="text-[var(--accent)] bg-[var(--accent)]/10 p-2 rounded-full"><Zap size={24} className="animate-bounce" /></div>
-              <div className="space-y-1">
-                <p className="font-pixel text-[10px] text-[var(--accent)] uppercase tracking-tighter">System Alert</p>
-                <p className="font-mono text-[9px] text-[var(--text-muted)] uppercase">
-                  Achieve 100% sync in all 3 primary modules to qualify for advanced Clearance Level 5.
-                </p>
-              </div>
-            </div>
+           
           </section>
         </div>
       </div>
