@@ -195,7 +195,7 @@ export function SettingsPage() {
             </h3>
 
             <div className="space-y-4">
-              <TacticalBar label="Python_Core"  icon={Code2} courseId={progressData.python.id} />
+              <TacticalBar label="Python_Core" percent={progressData.python.percent} icon={Code2} courseId={progressData.python.id} />
               <TacticalBar label="SQL_Databases" percent={progressData.sql.percent} icon={Database} courseId={progressData.sql.id} />
               <TacticalBar label="R_Analytics" percent={progressData.r.percent} icon={Terminal} courseId={progressData.r.id} />
             </div>

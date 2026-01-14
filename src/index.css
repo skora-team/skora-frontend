@@ -241,3 +241,211 @@ body {
 .pixel-font {
   font-family: 'Press Start 2P', cursive;
 }
+/* =========================
+   PROFESSIONAL LESSON LAYOUT
+   ========================= */
+
+.lesson-shell {
+  display: flex;
+  justify-content: center;
+  padding: 1.5rem 1rem 4rem;
+}
+
+/* =========================
+   THEME VARIABLES
+   ========================= */
+
+:root {
+  --lesson-bg-dark: rgba(2, 6, 23, 0.65);
+  --lesson-bg-light: #f8fafc;
+
+  --lesson-text-dark: #e5e7eb;
+  --lesson-text-light: #0f172a;
+
+  --lesson-muted-dark: #cbd5f5;
+  --lesson-muted-light: #475569;
+
+  --lesson-border-dark: rgba(255,255,255,0.08);
+  --lesson-border-light: rgba(0,0,0,0.08);
+}
+
+/* =========================
+   LESSON CARD
+   ========================= */
+
+.lesson-card {
+  max-width: 820px;
+  width: 100%;
+  border-radius: 20px;
+  padding: 3.5rem 3rem;
+  margin-top: -1rem;
+
+  background: var(--lesson-bg-dark);
+  color: var(--lesson-text-dark);
+  border: 1px solid var(--lesson-border-dark);
+
+  backdrop-filter: blur(10px);
+  box-shadow:
+    0 0 0 1px rgba(255,255,255,0.04),
+    0 30px 80px rgba(0,0,0,.6);
+}
+
+/* ===== LIGHT MODE OVERRIDE ===== */
+/* change selector if your app uses something else */
+
+html.light .lesson-card,
+body.light .lesson-card {
+  background: var(--lesson-bg-light);
+  color: var(--lesson-text-light);
+  border: 1px solid var(--lesson-border-light);
+  box-shadow: 0 12px 30px rgba(0,0,0,.08);
+}
+
+/* =========================
+   MARKDOWN TYPOGRAPHY
+   ========================= */
+
+.sci-markdown {
+  font-family: "Inter", system-ui, sans-serif;
+  line-height: 1.85;
+  font-size: 1.05rem;
+  color: var(--lesson-text-dark);
+}
+
+.sci-markdown p {
+  margin: 1.4rem 0;
+  color: var(--lesson-muted-dark);
+}
+
+/* Light mode text */
+html.light .sci-markdown,
+body.light .sci-markdown {
+  color: var(--lesson-text-light);
+}
+
+html.light .sci-markdown p,
+body.light .sci-markdown p {
+  color: var(--lesson-muted-light);
+}
+
+/* =========================
+   HEADINGS
+   ========================= */
+
+.sci-markdown h1 {
+  font-size: 2.4rem;
+  margin-bottom: 2.5rem;
+  letter-spacing: -0.02em;
+}
+
+.sci-markdown h2 {
+  font-size: 1.55rem;
+  margin-top: 3.5rem;
+  margin-bottom: 1rem;
+  color: #67e8f9;
+}
+
+.sci-markdown h3 {
+  font-size: 1.2rem;
+  margin-top: 2rem;
+  color: #7dd3fc;
+}
+
+/* =========================
+   CODE BLOCKS
+   ========================= */
+
+.sci-markdown pre {
+  background: #020617;
+  border-radius: 16px;
+  padding: 1.6rem 1.8rem;
+  margin: 2.2rem 0;
+  font-size: 0.95rem;
+  border: 1px solid rgba(103,232,249,.35);
+  box-shadow:
+    0 0 0 1px rgba(103,232,249,.15),
+    0 12px 40px rgba(0,0,0,.7);
+  overflow-x: auto;
+  position: relative;
+}
+
+/* Code label */
+.sci-markdown pre::before {
+  content: "CODE";
+  position: absolute;
+  top: -12px;
+  left: 18px;
+  background: #020617;
+  color: #67e8f9;
+  font-size: 0.7rem;
+  padding: 3px 10px;
+  border-radius: 999px;
+  border: 1px solid rgba(103,232,249,.6);
+  letter-spacing: 0.08em;
+}
+
+/* Inline code */
+.sci-markdown p code,
+.sci-markdown li code {
+  background: rgba(103,232,249,.15);
+  color: #67e8f9;
+  padding: 3px 6px;
+  border-radius: 6px;
+  font-size: 0.9em;
+  font-family: "JetBrains Mono", monospace;
+}
+
+/* =========================
+   CALLOUTS
+   ========================= */
+
+.sci-markdown blockquote {
+  background: rgba(103,232,249,.08);
+  border-left: 4px solid #67e8f9;
+  padding: 1.2rem 1.4rem;
+  border-radius: 12px;
+  margin: 2.5rem 0;
+}
+
+/* =========================
+   LISTS / TABLES / HR
+   ========================= */
+
+.sci-markdown ul {
+  padding-left: 1.4rem;
+}
+
+.sci-markdown li {
+  margin: 0.6rem 0;
+}
+
+.sci-markdown table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 2.5rem 0;
+  font-size: 0.95rem;
+}
+
+.sci-markdown th,
+.sci-markdown td {
+  padding: 12px 14px;
+  border-bottom: 1px solid rgba(255,255,255,.08);
+}
+
+.sci-markdown th {
+  text-align: left;
+  color: #67e8f9;
+}
+
+.sci-markdown hr {
+  margin: 3rem 0;
+  border: none;
+  height: 1px;
+  background: linear-gradient(
+    to right,
+    transparent,
+    rgba(103,232,249,.6),
+    transparent
+  );
+}
+
