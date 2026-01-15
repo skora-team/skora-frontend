@@ -1,6 +1,7 @@
 import React from "react";
 import { useFadeInOnScroll } from "./hooks/useFadeInOnScroll";
 
+
 const LevelUpSection: React.FC = () => {
   // FIRST SECTION FADE HOOKS
   const img1 = useFadeInOnScroll<HTMLImageElement>();
