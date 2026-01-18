@@ -5,6 +5,7 @@ import CourseCard from "./components/CourseCard";
 import LevelUpSection from "./LevelUpSection";
 import Footer from "./components/Footer";
 import ScrollFloat from "../src/hooks/ScrollFloat";
+import { UserPlus } from "lucide-react";
 
 const Home: React.FC = () => {
   return (
@@ -45,21 +46,37 @@ const Home: React.FC = () => {
           </ul>
         </div>
 
-        <Link
-          to="/signup"
-          className="
-            relative bg-[#F9CF4F] text-black font-bold text-xs px-4 py-2
-            border-4 border-[#786601]
-            shadow-[0_3px_0_0_#000]
-            active:shadow-[0_1px_0_0_#000]
-            active:translate-y-[1px]
-            hover:bg-[#ffefb5]
-            rounded-none select-none transition-all
-            font-['Press_Start_2P',cursive]
-          "
-        >
-          Sign Up
-        </Link>
+
+// ... inside your component
+<Link 
+  to="/Signup" 
+  className="
+    group relative flex items-center gap-3 
+    pixel-font text-[10px] uppercase tracking-tighter
+    bg-[#ffcd4b] text-black 
+    px-6 py-3 
+    border-2 border-black 
+    shadow-[6px_6px_0px_#000] 
+    hover:shadow-[2px_2px_0px_#000] 
+    hover:translate-x-[4px] hover:translate-y-[4px] 
+    active:shadow-none active:translate-x-[6px] active:translate-y-[6px] 
+    transition-all duration-100
+  "
+>
+  {/* The Icon */}
+  <UserPlus size={14} className="group-hover:rotate-12 transition-transform" />
+  
+  {/* The Text */}
+  <span className="relative">
+    Sign_Up
+    {/* Subtle underline animation */}
+    <span className="absolute -bottom-1 left-0 w-0 h-[1px] bg-black opacity-30 group-hover:w-full transition-all duration-300"></span>
+  </span>
+
+  {/* Decorative Corner Brackets */} 
+  <div className="absolute -top-1 -right-1 w-2 h-2 border-t-2 border-r-2 border-black/40 opacity-0 group-hover:opacity-100 transition-opacity"></div>
+  <div className="absolute -bottom-1 -left-1 w-2 h-2 border-b-2 border-l-2 border-black/40 opacity-0 group-hover:opacity-100 transition-opacity"></div>
+</Link>
       </nav>
 
       {/* ================= MAIN ================= */}
@@ -89,21 +106,32 @@ const Home: React.FC = () => {
               The most fun and beginner-friendly way to learn to code with Skora.
             </p>
 
-            <Link
-              to="/video"
-              className="
-                relative inline-block bg-[#F9CF4F] text-black px-5 py-1
-                border-3 border-black
-                shadow-[0_4px_0_0_#000]
-                active:shadow-[0_2px_0_0_#000]
-                active:translate-y-0.5
-                hover:bg-[#ffefb5]
-                rounded-none select-none transition-all
-                font-['Press_Start_2P',cursive]
-              "
-            >
-              Get Started
-            </Link>
+            <Link 
+  to="/video" 
+  className="
+    group relative flex items-center gap-3 
+    pixel-font text-[15px] uppercase tracking-tighter   
+    bg-[#ffcd4b] text-black 
+    px-6 py-3 
+    border-2 border-black 
+    shadow-[6px_6px_0px_#000] 
+    hover:shadow-[2px_2px_0px_#000] 
+    hover:translate-x-[4px] hover:translate-y-[4px] 
+    active:shadow-none active:translate-x-[6px] active:translate-y-[6px] 
+    transition-all duration-100
+  "
+> 
+  {/* The Text */}
+  <span className="relative">
+    GET STARTED
+    {/* Subtle underline animation */}
+    <span className="absolute -bottom-1 left-0 w-0 h-[1px] bg-black opacity-30 group-hover:w-full transition-all duration-300"></span>
+  </span>
+
+  {/* Decorative Corner Brackets */} 
+  <div className="absolute -top-1 -right-1 w-2 h-2 border-t-2 border-r-2 border-black/40 opacity-0 group-hover:opacity-100 transition-opacity"></div>
+  <div className="absolute -bottom-1 -left-1 w-2 h-2 border-b-2 border-l-2 border-black/40 opacity-0 group-hover:opacity-100 transition-opacity"></div>
+</Link>
           </div>
         </section>
 
