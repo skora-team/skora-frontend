@@ -45,9 +45,6 @@ const Home: React.FC = () => {
             </li>
           </ul>
         </div>
-
-
-// ... inside your component
 <Link 
   to="/Signup" 
   className="
