@@ -37,6 +37,77 @@ export function LessonPage() {
   const [loading, setLoading] = useState(true);
   const [selectedAnswers, setSelectedAnswers] = useState<Record<number, number>>({});
   const [quizSubmitted, setQuizSubmitted] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
+  const [submitError, setSubmitError] = useState('');
+  const [score, setScore] = useState<number | null>(null);
+  const [totalQuestions, setTotalQuestions] = useState<number | null>(null);
+  const [questionResults, setQuestionResults] = useState<Record<number, boolean>>({});
+  const [completionSaved, setCompletionSaved] = useState<boolean | null>(null);
+
+  const answeredCount = questions.reduce((count, q) => {
+    return selectedAnswers[q.id] !== undefined ? count + 1 : count;
+  }, 0);
+
+  const unansweredCount = Math.max(questions.length - answeredCount, 0);
+
+  async function handleSubmitQuiz() {
+    if (!lesson || !courseId || questions.length === 0) return;
+
+    setSubmitting(true);
+    setSubmitError('');
+
+    try {
+      const answers = questions.map((q) => ({
+        question_id: q.id,
+        answer_id: selectedAnswers[q.id]
+      }));
+
+      const result = await api.submitLessonQuiz(lesson.id, { answers });
+      const normalizedResults = Object.entries(result.results || {}).reduce<Record<number, boolean>>(
+        (acc, [questionId, isCorrect]) => {
+          const numericId = Number(questionId);
+          if (!Number.isNaN(numericId)) {
+            acc[numericId] = Boolean(isCorrect);
+          }
+          return acc;
+        },
+        {}
+      );
+
+      setQuestionResults(normalizedResults);
+      setScore(result.correct_count);
+      setTotalQuestions(result.total_questions);
+      setQuizSubmitted(true);
+      setCompletionSaved(null);
+
+      try {
+        // Keep this explicit completion write for dashboard sync.
+        await api.markLessonComplete(Number(courseId), lesson.id, result.score);
+        setCompletionSaved(true);
+      } catch (completionError) {
+        console.error('Quiz graded but completion save failed:', completionError);
+        setCompletionSaved(false);
+        setSubmitError('Quiz was graded, but saving progress failed. Please try again.');
+      }
+    } catch (error) {
+      console.error('Failed to submit quiz:', error);
+      setSubmitError('We could not submit your quiz to the server. Please try again.');
+      setQuizSubmitted(false);
+      setCompletionSaved(null);
+    } finally {
+      setSubmitting(false);
+    }
+  }
+
+  function handleRetry() {
+    setSelectedAnswers({});
+    setQuizSubmitted(false);
+    setSubmitError('');
+    setScore(null);
+    setTotalQuestions(null);
+    setQuestionResults({});
+    setCompletionSaved(null);
+  }
 
   useEffect(() => {
     async function load() {
@@ -115,8 +186,11 @@ export function LessonPage() {
                       let cls = "border-[var(--border-color)] bg-[var(--bg-main)]/50 text-[var(--text-muted)]";
                       
                       if (quizSubmitted) {
-                        if (opt.is_correct) cls = "border-green-500 bg-green-500/10 text-green-500";
-                        else if (isSelected) cls = "border-red-500 bg-red-500/10 text-red-500";
+                        if (isSelected && questionResults[q.id] === true) {
+                          cls = "border-green-500 bg-green-500/10 text-green-500";
+                        } else if (isSelected && questionResults[q.id] === false) {
+                          cls = "border-red-500 bg-red-500/10 text-red-500";
+                        }
                       } else if (isSelected) {
                         cls = "border-[var(--accent)] bg-[var(--accent-glow)] text-[var(--accent)]";
                       }
@@ -141,24 +215,42 @@ export function LessonPage() {
           <div className="p-6 bg-[var(--bg-main)] border-t border-[var(--border-color)] flex justify-end">
              {!quizSubmitted ? (
                <button 
-                 onClick={() => setQuizSubmitted(true)} 
-                 disabled={questions.length === 0} 
+                 onClick={handleSubmitQuiz}
+                 disabled={questions.length === 0 || unansweredCount > 0 || submitting}
                  className="bg-[var(--accent)] text-black font-bold font-pixel py-3 px-8 rounded disabled:opacity-50"
                >
-                 SUBMIT
+                 {submitting
+                   ? 'SUBMITTING...'
+                   : unansweredCount > 0
+                     ? `ANSWER ${unansweredCount} MORE`
+                     : 'SUBMIT'}
                </button> 
              ) : (
                <div className="flex items-center gap-4">
                   <button 
-                    onClick={() => window.location.reload()} 
+                    onClick={handleRetry}
                     className="text-[var(--text-muted)] text-xs underline font-pixel"
                   >
                     RETRY
                   </button>
-                  <span className="text-green-500 font-bold font-pixel">COMPLETE</span>
+                  <span className={`font-bold font-pixel ${completionSaved === false ? 'text-orange-500' : 'text-green-500'}`}>
+                    {completionSaved === false ? 'GRADED' : 'COMPLETE'}
+                  </span>
                </div>
              )}
           </div>
+
+          {quizSubmitted && score !== null && (
+            <div className="px-6 pb-6 text-sm font-mono text-[var(--text-main)]">
+              SCORE: {score}/{totalQuestions ?? questions.length}
+            </div>
+          )}
+
+          {submitError && (
+            <div className="px-6 pb-6 text-sm font-mono text-red-400">
+              {submitError}
+            </div>
+          )}
         </section>
       </div>
     </DashboardLayout>

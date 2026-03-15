@@ -28,3 +28,26 @@ export interface Question {
   options?: AnswerOption[];
   answer_options?: AnswerOption[];
 }
+
+export interface UserAnswerIn {
+  question_id: number;
+  answer_id: number;
+}
+
+export interface QuizSubmission {
+  answers: UserAnswerIn[];
+}
+
+export interface QuizResult {
+  score: number;
+  total_questions: number;
+  correct_count: number;
+  results: Record<string, boolean>;
+}
+
+export interface Completion {
+  user_id: number;
+  lesson_id: number;
+  course_id?: number;
+  score?: number;
+}

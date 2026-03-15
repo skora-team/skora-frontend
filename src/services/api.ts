@@ -1,4 +1,4 @@
-import type { Lesson, Question } from '../types/api.types';
+import type { Completion, Lesson, Question, QuizResult, QuizSubmission } from '../types/api.types';
 
 const BASE_URL = 'https://skora-backend.onrender.com'; 
 
@@ -42,9 +42,11 @@ async function fetchJson<T>(endpoint: string, options: RequestInit = {}): Promis
       headers,
     });
 
-    // 3. Graceful error handling for completions
+    const method = (options.method || 'GET').toUpperCase();
+
+    // 3. Graceful error handling for completion reads only
     if (response.status === 404 || response.status === 405) {
-      if (path.includes('completions')) {
+      if (path.includes('completions') && method === 'GET') {
         return [] as any; 
       }
     }
@@ -52,8 +54,10 @@ async function fetchJson<T>(endpoint: string, options: RequestInit = {}): Promis
     if (!response.ok) throw new Error(`Status ${response.status}`);
     return response.json();
   } catch (error) {
-    // If the completions fetch fails, just return an empty array to keep the UI clean
-    if (endpoint.includes('completions')) return [] as any;
+    const method = (options.method || 'GET').toUpperCase();
+
+    // If completion reads fail, return empty array to keep dashboard UI stable
+    if (endpoint.includes('completions') && method === 'GET') return [] as any;
     
     console.error(`[API ERROR] ${endpoint}:`, error);
     throw error;
@@ -86,7 +90,7 @@ export const api = {
     
     // Attempt the path from your documentation
     try {
-      const data = await fetchJson<any[]>(`/courses/users/${id}/completions/`);
+      const data = await fetchJson<Completion[]>(`/courses/users/${id}/completions/`);
       return Array.isArray(data) ? data : [];
     } catch {
       // If the "Get All" endpoint doesn't exist, return empty array
@@ -102,11 +106,17 @@ export const api = {
   // Path fixed to match documentation screenshot
   getRandomQuestionsByOrder: (courseId: number, orderIndex: number, count: number = 10) => 
     fetchJson<Question[]>(`/courses/${courseId}/lessons/order/${orderIndex}/questions/random?count=${count}`),
+
+  submitLessonQuiz: (lessonId: number, submission: QuizSubmission) =>
+    fetchJson<QuizResult>(`/lessons/${lessonId}/submit`, {
+      method: 'POST',
+      body: JSON.stringify(submission)
+    }),
   
-  markLessonComplete: (_courseId: number, lessonId: number) => {
+  markLessonComplete: (courseId: number, lessonId: number, score: number) => {
     const userId = auth.getUserId();
-    // Path fixed to match documentation screenshot
-    return fetchJson(`/courses/users/${userId}/completions/${lessonId}/`, {
+    if (!userId) throw new Error('NO_SESSION');
+    return fetchJson<Completion>(`/users/${userId}/completions?lesson_id=${lessonId}&course_id=${courseId}&score=${score}`, {
       method: 'POST'
     });
   }
