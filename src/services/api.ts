@@ -1,6 +1,7 @@
 import type { Completion, Lesson, Question, QuizResult, QuizSubmission } from '../types/api.types';
 
 const BASE_URL = 'https://skora-backend.onrender.com'; 
+const PROGRESS_VERSION_KEY = 'progress_version';
 
 export const auth = {
   getUserId: () => {
@@ -13,6 +14,14 @@ export const auth = {
     localStorage.removeItem('token');
   }
 };
+
+function bumpProgressVersion() {
+  localStorage.setItem(PROGRESS_VERSION_KEY, Date.now().toString());
+}
+
+function getProgressVersion() {
+  return localStorage.getItem(PROGRESS_VERSION_KEY) ?? '0';
+}
 
 async function fetchJson<T>(endpoint: string, options: RequestInit = {}): Promise<T> {
   try {
@@ -87,10 +96,11 @@ export const api = {
   getUserCompletions: async () => {
     const id = auth.getUserId();
     if (!id) return [];
+    const progressVersion = getProgressVersion();
     
     // Attempt the path from your documentation
     try {
-      const data = await fetchJson<Completion[]>(`/courses/users/${id}/completions/`);
+      const data = await fetchJson<Completion[]>(`/courses/users/${id}/completions/?v=${progressVersion}`);
       return Array.isArray(data) ? data : [];
     } catch {
       // If the "Get All" endpoint doesn't exist, return empty array
@@ -118,6 +128,9 @@ export const api = {
     if (!userId) throw new Error('NO_SESSION');
     return fetchJson<Completion>(`/users/${userId}/completions?lesson_id=${lessonId}&course_id=${courseId}&score=${score}`, {
       method: 'POST'
+    }).then((completion) => {
+      bumpProgressVersion();
+      return completion;
     });
   }
 };
