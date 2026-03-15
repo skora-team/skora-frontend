@@ -70,3 +70,15 @@ export interface CourseProgress {
   next_lesson_id?: number | null;
   lessons: LessonProgress[];
 }
+
+export interface RecommendationTarget {
+  courseId: number | null;
+  lessonId: number | null;
+  title?: string;
+  strategy?: string;
+  message?: string;
+  reason?: string;
+  recommendedQuizDifficulty?: string;
+  confidence?: number;
+  isComplete?: boolean;
+}

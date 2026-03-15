@@ -1,4 +1,4 @@
-import type { AnswerOption, Completion, CourseProgress, Lesson, Question, QuizResult, QuizSubmission } from '../types/api.types';
+import type { AnswerOption, Completion, CourseProgress, Lesson, Question, QuizResult, QuizSubmission, RecommendationTarget } from '../types/api.types';
 
 const BASE_URL = 'https://skora-backend.onrender.com'; 
 const PROGRESS_VERSION_KEY = 'progress_version';
@@ -93,6 +93,31 @@ async function fetchJson<T>(endpoint: string, options: RequestInit = {}): Promis
   }
 }
 
+function normalizeRecommendationTarget(payload: unknown): RecommendationTarget {
+  const source = (payload && typeof payload === 'object') ? payload as Record<string, unknown> : {};
+  const courseId = typeof source.recommended_course_id === 'number' ? source.recommended_course_id : null;
+  const lessonId = typeof source.recommended_lesson_id === 'number' ? source.recommended_lesson_id : null;
+  const strategy = typeof source.strategy === 'string' ? source.strategy : undefined;
+  const message = typeof source.message === 'string' ? source.message : undefined;
+  const reason = typeof source.reason === 'string' ? source.reason : undefined;
+  const recommendedQuizDifficulty = typeof source.recommended_quiz_difficulty === 'string'
+    ? source.recommended_quiz_difficulty
+    : undefined;
+  const confidence = typeof source.confidence === 'number' ? source.confidence : undefined;
+  const isComplete = strategy === 'complete' || lessonId === null;
+
+  return {
+    courseId,
+    lessonId,
+    strategy,
+    message,
+    reason,
+    recommendedQuizDifficulty,
+    confidence,
+    isComplete
+  };
+}
+
 export const api = {
   getUsers: () => fetchJson<any[]>('/users/'),
 
@@ -130,6 +155,13 @@ export const api = {
   },
 
   getCourses: () => fetchJson<any[]>('/courses/'),
+
+  getNextLearningRecommendation: async () => {
+    const userId = await getOrHydrateUserId();
+    if (!userId) throw new Error('NO_SESSION');
+    const payload = await fetchJson<Record<string, unknown>>(`/courses/users/${userId}/recommendations/next`);
+    return normalizeRecommendationTarget(payload);
+  },
 
   getCourseProgress: async (courseId: number) => {
     const userId = await getOrHydrateUserId();

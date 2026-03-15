@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { api } from '../../services/api';
-import type { Lesson } from '../../types/api.types';
+import type { Lesson, RecommendationTarget } from '../../types/api.types';
 import { DashboardLayout } from '../../components/layout/DashboardLayout';
 import { LessonNode } from '../../components/dashboard/LessonNode';
 import { ChevronLeft, Loader2 } from 'lucide-react';
@@ -10,6 +10,7 @@ export function CoursePage() {
   const { courseId } = useParams();
   const [lessons, setLessons] = useState<Lesson[]>([]);
   const [completedIds, setCompletedIds] = useState<Set<number>>(new Set()); // Store completed lesson IDs
+  const [recommendation, setRecommendation] = useState<RecommendationTarget | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -19,10 +20,11 @@ export function CoursePage() {
       try {
         setLoading(true);
         
-        // Fetch lessons and completions at the same time
-        const [lessonsData, completionsData] = await Promise.all([
+        // Fetch lessons, completions, and recommendation together.
+        const [lessonsData, completionsData, nextRecommendation] = await Promise.all([
           api.getLessons(parseInt(courseId!)),
-          api.getUserCompletions() // This uses the ID from localStorage automatically
+          api.getUserCompletions(),
+          api.getNextLearningRecommendation().catch(() => null)
         ]);
 
         // Sort lessons by order_index
@@ -34,6 +36,7 @@ export function CoursePage() {
           Array.isArray(completionsData) ? completionsData.map((c: any) => c.lesson_id) : []
         );
         setCompletedIds(completedSet);
+        setRecommendation(nextRecommendation);
 
       } catch (err) {
         console.error("Error loading missions:", err);
@@ -57,9 +60,32 @@ export function CoursePage() {
           Missions <span className="text-orange-500">Active</span>
         </h1>
         <p className="text-[var(--text-muted)] font-mono text-[10px]">
-          // COMPLETE PREVIOUS MODULES TO UNLOCK NEXT SEQUENCE
+          // ADAPTIVE RECOMMENDATION ENGINE CONTROLS NEXT UNLOCK
         </p>
       </header>
+
+      {recommendation && !recommendation.isComplete && recommendation.lessonId && recommendation.courseId && (
+        <div className="mb-8 border border-[var(--accent)] bg-[var(--accent-glow)] px-4 py-4 font-mono text-xs text-[var(--text-main)] space-y-2">
+          <div>
+            {recommendation.courseId === Number(courseId)
+              ? 'NEXT RECOMMENDED MISSION UNLOCKED:'
+              : 'ADAPTIVE ENGINE RECOMMENDS YOUR NEXT MISSION IN ANOTHER TRACK:'}
+            {' '}
+            <Link
+              to={`/course/${recommendation.courseId}/lesson/${recommendation.lessonId}`}
+              className="font-bold text-[var(--accent)] underline"
+            >
+              {`LESSON ${recommendation.lessonId}`}
+            </Link>
+          </div>
+          {recommendation.message && (
+            <div className="text-[var(--text-main)]/90">{recommendation.message}</div>
+          )}
+          {recommendation.reason && (
+            <div className="text-[var(--text-muted)]">REASON: {recommendation.reason}</div>
+          )}
+        </div>
+      )}
 
       {loading ? (
         <div className="text-[var(--accent)] font-pixel animate-pulse">
@@ -68,15 +94,16 @@ export function CoursePage() {
       ) : (
         <div className="max-w-2xl border-l-2 border-[var(--border-color)] ml-4 pl-4 relative">
           {lessons.map((lesson, index) => {
-            // --- PROGRESS LOGIC ---
-            // 1. First lesson is always unlocked
-            // 2. Other lessons are unlocked ONLY if the lesson before it is completed
-            const isFirstLesson = index === 0;
-            const prevLessonId = index > 0 ? lessons[index - 1].id : null;
-            const prevLessonCompleted = prevLessonId ? completedIds.has(prevLessonId) : false;
-            
-            const isUnlocked = isFirstLesson || prevLessonCompleted;
-            const status = isUnlocked ? 'unlocked' : 'locked';
+            const isCompleted = completedIds.has(lesson.id);
+            const isRecommended = recommendation?.courseId === Number(courseId) && recommendation.lessonId === lesson.id;
+            const isBootstrapLesson = completedIds.size === 0 && index === 0 && !recommendation?.lessonId;
+
+            let status: 'locked' | 'unlocked' | 'completed' = 'locked';
+            if (isCompleted) {
+              status = 'completed';
+            } else if (isRecommended || isBootstrapLesson) {
+              status = 'unlocked';
+            }
 
             return (
               <LessonNode 

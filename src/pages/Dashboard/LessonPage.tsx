@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { api } from '../../services/api';
-import type { AnswerOption, Lesson, Question } from '../../types/api.types';
+import type { AnswerOption, Lesson, Question, RecommendationTarget } from '../../types/api.types';
 import { DashboardLayout } from '../../components/layout/DashboardLayout';
 import { LessonContent } from '../../components/dashboard/LessonContent';
 import { ChevronLeft, CheckCircle2, Circle, Play } from 'lucide-react';
@@ -41,6 +41,7 @@ export function LessonPage() {
   const [totalQuestions, setTotalQuestions] = useState<number | null>(null);
   const [questionResults, setQuestionResults] = useState<Record<number, boolean>>({});
   const [completionSaved, setCompletionSaved] = useState<boolean | null>(null);
+  const [nextRecommendation, setNextRecommendation] = useState<RecommendationTarget | null>(null);
 
   const answeredCount = questions.reduce((count, q) => {
     return selectedAnswers[q.id] !== undefined ? count + 1 : count;
@@ -82,16 +83,30 @@ export function LessonPage() {
         // Keep this explicit completion write for dashboard sync.
         await api.markLessonComplete(Number(courseId), lesson.id, result.score);
         setCompletionSaved(true);
+
+        try {
+          const recommendation = await api.getNextLearningRecommendation();
+          if (recommendation.lessonId && recommendation.lessonId !== lesson.id) {
+            setNextRecommendation(recommendation);
+          } else {
+            setNextRecommendation(null);
+          }
+        } catch (recommendationError) {
+          console.error('Completion saved but next recommendation fetch failed:', recommendationError);
+          setNextRecommendation(null);
+        }
       } catch (completionError) {
         console.error('Quiz graded but completion save failed:', completionError);
         setCompletionSaved(false);
         setSubmitError('Quiz was graded, but saving progress failed. Please try again.');
+        setNextRecommendation(null);
       }
     } catch (error) {
       console.error('Failed to submit quiz:', error);
       setSubmitError('We could not submit your quiz to the server. Please try again.');
       setQuizSubmitted(false);
       setCompletionSaved(null);
+      setNextRecommendation(null);
     } finally {
       setSubmitting(false);
     }
@@ -105,6 +120,7 @@ export function LessonPage() {
     setTotalQuestions(null);
     setQuestionResults({});
     setCompletionSaved(null);
+    setNextRecommendation(null);
   }
 
   useEffect(() => {
@@ -281,6 +297,26 @@ export function LessonPage() {
           {submitError && (
             <div className="px-6 pb-6 text-sm font-mono text-red-400">
               {submitError}
+            </div>
+          )}
+
+          {quizSubmitted && completionSaved && nextRecommendation?.courseId && nextRecommendation.lessonId && (
+            <div className="px-6 pb-6 text-sm font-mono text-[var(--text-main)] space-y-2">
+              <div>
+                NEXT LEVEL UNLOCKED HERE:{' '}
+                <Link
+                  to={`/course/${nextRecommendation.courseId}/lesson/${nextRecommendation.lessonId}`}
+                  className="font-bold text-[var(--accent)] underline"
+                >
+                  {`LESSON ${nextRecommendation.lessonId}`}
+                </Link>
+              </div>
+              {nextRecommendation.message && (
+                <div>{nextRecommendation.message}</div>
+              )}
+              {nextRecommendation.reason && (
+                <div className="text-[var(--text-muted)]">REASON: {nextRecommendation.reason}</div>
+              )}
             </div>
           )}
         </section>
