@@ -1,13 +1,10 @@
 @import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
 
-@tailwind base;
-@tailwind components;
 @tailwind utilities;
 
 body {
   margin: 0;
   background-color: #1a1a2e; 
-  font-family: 'Press Start 2P', cursive;
   -webkit-font-smoothing: none;
 }
 
@@ -60,3 +57,409 @@ body {
 .pixelated {
   image-rendering: pixelated;
 }
+@import "tailwindcss";
+
+@layer base {
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+
+  body {
+    background: #E5D8C5;
+    color: #000;
+    font-family: "Chakra Petch", sans-serif;
+  }
+}
+
+@layer utilities {
+  @keyframes fadeUp {
+    0% {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    100% {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  .pixel-btn {
+  image-rendering: pixelated;
+  border-radius: 0;
+  font-family: 'Press Start 2P', monospace !important;
+}
+
+  .fade-up {
+    animation: fadeUp 0.8s ease-out forwards;
+  }
+
+  .fade-delay-1 {
+    animation-delay: 0.3s;
+  }
+
+  .fade-delay-2 {
+    animation-delay: 0.6s;
+  }
+
+  /* ⭐ Floating animation */
+  @keyframes floatText {
+    0%, 100% {
+      transform: translateY(0);
+    }
+    50% {
+      transform: translateY(-6px);
+    }
+  }
+
+  .float-text {
+    animation: floatText 2.5s ease-in-out infinite;
+  }
+}
+@keyframes floatBoth {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-6px);
+  }
+}
+
+.float-both {
+  animation: floatBoth 3s ease-in-out infinite;
+}
+  .image-render {
+    image-rendering: pixelated;
+  }
+  
+@keyframes pixelPressSmooth {
+  0% {
+    transform: scale(1) translateY(0);
+    box-shadow: 0 4px 0 #000;
+  }
+  30% {
+    transform: scale(0.96) translateY(2px);
+    box-shadow: 0 3px 0 #000;
+  }
+  60% {
+    transform: scale(1.04) translateY(-1px);
+    box-shadow: 0 5px 0 #000;
+  }
+  100% {
+    transform: scale(1) translateY(0);
+    box-shadow: 0 4px 0 #000;
+  }
+}
+
+.pixel-press {
+  animation: pixelPressSmooth 0.45s cubic-bezier(0.25, 0.4, 0.3, 1) forwards;
+}
+@keyframes floatSlow {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+.float-slow {
+  animation: floatSlow 4s ease-in-out infinite;
+}
+
+@layer base {
+  :root {
+    /* LIGHT MODE */
+    --bg-main: #f8fafc;
+    --bg-sidebar: #ffffff;
+    --border-color: #e2e8f0;
+    --text-main: #0f172a;
+    --text-muted: #64748b;
+    --accent: #0284c7;
+    --accent-glow: rgba(2, 132, 199, 0.1);
+  }
+
+  .dark {
+    /* DARK MODE */
+    --bg-main: #050510;
+    --bg-sidebar: #0a0a14;
+    --border-color: #2a2a40;
+    --text-main: #ffffff;
+    --text-muted: #94a3b8;
+    --accent: #00f3ff;
+    --accent-glow: rgba(0, 243, 255, 0.1);
+  }
+}
+
+body {
+  background-color: var(--bg-main);
+  color: var(--text-main);
+  font-family: 'Inter', sans-serif;
+  transition: background-color 0.3s, color 0.3s;
+}
+#root {
+ 
+  margin: 0 auto;
+
+  text-align: center;
+}
+
+.logo {
+  height: 6em;
+  padding: 1.5em;
+  will-change: filter;
+  transition: filter 300ms;
+}
+.logo:hover {
+  filter: drop-shadow(0 0 2em #646cffaa);
+}
+.logo.react:hover {
+  filter: drop-shadow(0 0 2em #61dafbaa);
+}
+
+@keyframes logo-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  a:nth-of-type(2) .logo {
+    animation: logo-spin infinite 20s linear;
+  }
+}
+
+
+
+.read-the-docs {
+  color: #888;
+}
+.pixel-font {
+  font-family: 'Press Start 2P', cursive;
+}
+/* =========================
+   PROFESSIONAL LESSON LAYOUT
+   ========================= */
+
+.lesson-shell {
+  display: flex;
+  justify-content: center;
+  padding: 1.5rem 1rem 4rem;
+}
+
+/* =========================
+   THEME VARIABLES
+   ========================= */
+
+:root {
+  --lesson-bg-dark: rgba(2, 6, 23, 0.65);
+  --lesson-bg-light: #f8fafc;
+
+  --lesson-text-dark: #e5e7eb;
+  --lesson-text-light: #0f172a;
+
+  --lesson-muted-dark: #cbd5f5;
+  --lesson-muted-light: #475569;
+
+  --lesson-border-dark: rgba(255,255,255,0.08);
+  --lesson-border-light: rgba(0,0,0,0.08);
+}
+
+/* =========================
+   LESSON CARD
+   ========================= */
+
+.lesson-card {
+  max-width: 820px;
+  width: 100%;
+  border-radius: 20px;
+  padding: 3.5rem 3rem;
+  margin-top: -1rem;
+
+  background: var(--lesson-bg-dark);
+  color: var(--lesson-text-dark);
+  border: 1px solid var(--lesson-border-dark);
+
+  backdrop-filter: blur(10px);
+  box-shadow:
+    0 0 0 1px rgba(255,255,255,0.04),
+    0 30px 80px rgba(0,0,0,.6);
+}
+
+/* ===== LIGHT MODE OVERRIDE ===== */
+/* change selector if your app uses something else */
+
+html.light .lesson-card,
+body.light .lesson-card {
+  background: var(--lesson-bg-light);
+  color: var(--lesson-text-light);
+  border: 1px solid var(--lesson-border-light);
+  box-shadow: 0 12px 30px rgba(0,0,0,.08);
+}
+
+/* =========================
+   MARKDOWN TYPOGRAPHY
+   ========================= */
+
+.sci-markdown {
+  font-family: "Inter", system-ui, sans-serif;
+  line-height: 1.85;
+  font-size: 1.05rem;
+  color: var(--lesson-text-dark);
+}
+
+.sci-markdown p {
+  margin: 1.4rem 0;
+  color: var(--lesson-muted-dark);
+}
+
+/* Light mode text */
+html.light .sci-markdown,
+body.light .sci-markdown {
+  color: var(--lesson-text-light);
+}
+
+html.light .sci-markdown p,
+body.light .sci-markdown p {
+  color: var(--lesson-muted-light);
+}
+
+/* =========================
+   HEADINGS
+   ========================= */
+
+.sci-markdown h1 {
+  font-size: 2.4rem;
+  margin-bottom: 2.5rem;
+  letter-spacing: -0.02em;
+}
+
+.sci-markdown h2 {
+  font-size: 1.55rem;
+  margin-top: 3.5rem;
+  margin-bottom: 1rem;
+  color: #67e8f9;
+}
+
+.sci-markdown h3 {
+  font-size: 1.2rem;
+  margin-top: 2rem;
+  color: #7dd3fc;
+}
+
+/* =========================
+   CODE BLOCKS
+   ========================= */
+
+.sci-markdown pre {
+  background: #020617;
+  border-radius: 16px;
+  padding: 1.6rem 1.8rem;
+  margin: 2.2rem 0;
+  font-size: 0.95rem;
+  border: 1px solid rgba(103,232,249,.35);
+  box-shadow:
+    0 0 0 1px rgba(103,232,249,.15),
+    0 12px 40px rgba(0,0,0,.7);
+  overflow-x: auto;
+  position: relative;
+}
+
+/* Code label */
+.sci-markdown pre::before {
+  content: "CODE";
+  position: absolute;
+  top: -12px;
+  left: 18px;
+  background: #020617;
+  color: #67e8f9;
+  font-size: 0.7rem;
+  padding: 3px 10px;
+  border-radius: 999px;
+  border: 1px solid rgba(103,232,249,.6);
+  letter-spacing: 0.08em;
+}
+
+/* Inline code */
+.sci-markdown p code,
+.sci-markdown li code {
+  background: rgba(103,232,249,.15);
+  color: #67e8f9;
+  padding: 3px 6px;
+  border-radius: 6px;
+  font-size: 0.9em;
+  font-family: "JetBrains Mono", monospace;
+}
+
+/* =========================
+   CALLOUTS
+   ========================= */
+
+.sci-markdown blockquote {
+  background: rgba(103,232,249,.08);
+  border-left: 4px solid #67e8f9;
+  padding: 1.2rem 1.4rem;
+  border-radius: 12px;
+  margin: 2.5rem 0;
+}
+
+/* =========================
+   LISTS / TABLES / HR
+   ========================= */
+
+.sci-markdown ul {
+  padding-left: 1.4rem;
+}
+
+.sci-markdown li {
+  margin: 0.6rem 0;
+}
+
+.sci-markdown table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 2.5rem 0;
+  font-size: 0.95rem;
+}
+
+.sci-markdown th,
+.sci-markdown td {
+  padding: 12px 14px;
+  border-bottom: 1px solid rgba(255,255,255,.08);
+}
+
+.sci-markdown th {
+  text-align: left;
+  color: #67e8f9;
+}
+
+.sci-markdown hr {
+  margin: 3rem 0;
+  border: none;
+  height: 1px;
+  background: linear-gradient(
+    to right,
+    transparent,
+    rgba(103,232,249,.6),
+    transparent
+  );
+}
+.scroll-float {
+  overflow: hidden;
+}
+
+.scroll-float-text {
+  display: inline-block;
+  font-size: clamp(1.6rem, 8vw, 10rem);
+  font-weight: 900;
+  text-align: center;
+  line-height: 1.5;
+}
+
+.char {
+  display: inline-block;
+}
+
