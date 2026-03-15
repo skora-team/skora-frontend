@@ -25,25 +25,28 @@ export function LessonPage() {
       setLoading(true);
       
       try {
-        // 1. Fetch Course Info (just for the title)
+        // 1. Fetch Course Info
         const courses = await api.getCourses();
         const c = Array.isArray(courses) ? courses.find(x => x.id === Number(courseId)) : null;
         if (c) setCourseTitle(c.title);
 
-        // 2. Fetch All Lessons to find the CURRENT one (We need the order_index)
+        // 2. Fetch Lessons to find order_index
         const lessons = await api.getLessons(Number(courseId));
         const currentLesson = lessons.find(l => l.id === Number(lessonId));
         
         if (currentLesson) {
           setLesson(currentLesson);
 
-          // 3. NEW: Fetch Random Questions using the ORDER INDEX
-          // We ask for up to 10 questions (count=10)
+          // 3. Fetch Questions using the specific path from your API docs
+          // Path: /courses/{id}/lessons/order/{index}/questions/random
           console.log(`Fetching questions for Order Index: ${currentLesson.order_index}`);
-          const qs = await api.getRandomQuestionsByOrder(Number(courseId), currentLesson.order_index, 10);
-          
-          // Set questions (or empty array if null)
-          setQuestions(Array.isArray(qs) ? qs : []);
+          try {
+            const qs = await api.getRandomQuestionsByOrder(Number(courseId), currentLesson.order_index, 10);
+            setQuestions(Array.isArray(qs) ? qs : []);
+          } catch (error) {
+            console.error('Failed to fetch questions:', error);
+            setQuestions([]); // Keep as empty to show no questions message
+          }
         }
 
       } catch (e) { 
@@ -69,10 +72,8 @@ export function LessonPage() {
           <h1 className="text-3xl font-bold text-[var(--text-main)]">{lesson.title}</h1>
         </header>
         
-        {/* EDUCATIONAL CONTENT (Top) */}
         <LessonContent title={lesson.title} courseTitle={courseTitle} apiContent={lesson.content} />
 
-        {/* QUIZ SECTION (Bottom) */}
         <section className="bg-[var(--bg-sidebar)] border-t-4 border-[var(--accent)] rounded-lg shadow-2xl overflow-hidden mt-12">
           <div className="bg-[var(--bg-main)] p-6 border-b border-[var(--border-color)] flex justify-between">
             <h2 className="text-xl font-bold font-pixel text-[var(--text-main)]">KNOWLEDGE CHECK</h2>
@@ -86,16 +87,21 @@ export function LessonPage() {
               </div>
             ) : (
               questions.map((q, idx) => (
-                <div key={q.id}>
+                <div key={`question-${q.id || idx}`}>
                   <h3 className="text-lg font-bold text-[var(--text-main)] mb-4">
                     <span className="text-[var(--text-muted)] mr-2">
                       {idx + 1}/{questions.length}.
                     </span>
-                    {q.text}
+                    {/* FIXED: Changed q.text to q.question_text */}
+                    {q.question_text || q.text} 
                   </h3>
                   
                   <div className="grid gap-3">
-                    {(q.options || [{id:1, text:"True"}, {id:2, text:"False"}]).map(opt => {
+                    {/* 
+                       Note: Your backend JSON doesn't include an 'options' array. 
+                       This fallback will display for every question.
+                    */}
+                    {(q.options || [{id: 1, text: "True", is_correct: true}, {id: 2, text: "False", is_correct: false}]).map((opt, optIdx) => {
                       const isSelected = selectedAnswers[q.id] === opt.id;
                       let cls = "border-[var(--border-color)] bg-[var(--bg-main)]/50 text-[var(--text-muted)]";
                       
@@ -108,7 +114,7 @@ export function LessonPage() {
                       
                       return (
                         <button 
-                          key={opt.id} 
+                          key={`opt-${q.id}-${opt.id || optIdx}`} 
                           onClick={() => !quizSubmitted && setSelectedAnswers(p => ({...p, [q.id]: opt.id}))} 
                           className={`w-full text-left p-4 border rounded flex items-center gap-3 transition-all ${cls}`}
                         >
@@ -133,7 +139,15 @@ export function LessonPage() {
                  SUBMIT
                </button> 
              ) : (
-               <span className="text-green-500 font-bold font-pixel">COMPLETE</span>
+               <div className="flex items-center gap-4">
+                  <button 
+                    onClick={() => window.location.reload()} 
+                    className="text-[var(--text-muted)] text-xs underline font-pixel"
+                  >
+                    RETRY
+                  </button>
+                  <span className="text-green-500 font-bold font-pixel">COMPLETE</span>
+               </div>
              )}
           </div>
         </section>
