@@ -1,4 +1,4 @@
-import type { AnswerOption, Completion, Lesson, Question, QuizResult, QuizSubmission } from '../types/api.types';
+import type { AnswerOption, Completion, CourseProgress, Lesson, Question, QuizResult, QuizSubmission } from '../types/api.types';
 
 const BASE_URL = 'https://skora-backend.onrender.com'; 
 const PROGRESS_VERSION_KEY = 'progress_version';
@@ -100,15 +100,15 @@ export const api = {
     const id = await getOrHydrateUserId();
     if (!id) throw new Error("NO_SESSION");
     
-    // Try 'me' first, then specific ID, then list find
+    // Try the documented authenticated endpoint first, then list find.
     try {
-      return await fetchJson<any>('/users/me/');
+      return await fetchJson<any>('/me/');
     } catch {
       try {
-        return await fetchJson<any>(`/users/${id}/`);
-      } catch {
         const all = await fetchJson<any[]>('/users/');
         return all.find((u: any) => u.id === id) || null;
+      } catch {
+        return null;
       }
     }
   },
@@ -130,6 +130,13 @@ export const api = {
   },
 
   getCourses: () => fetchJson<any[]>('/courses/'),
+
+  getCourseProgress: async (courseId: number) => {
+    const userId = await getOrHydrateUserId();
+    if (!userId) throw new Error('NO_SESSION');
+    const progressVersion = getProgressVersion();
+    return fetchJson<CourseProgress>(`/courses/users/${userId}/courses/${courseId}/progress?v=${progressVersion}`);
+  },
   
   getLessons: (courseId: number) => fetchJson<Lesson[]>(`/courses/${courseId}/lessons/`),
 

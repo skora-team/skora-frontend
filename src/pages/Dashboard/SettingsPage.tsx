@@ -86,33 +86,34 @@ export function SettingsPage() {
 
       try {
         setLoading(true);
-        const [user, courses, completions] = await Promise.all([
+        const [user, courses] = await Promise.all([
           api.getUserProfile(),
-          api.getCourses(),
-          api.getUserCompletions()
+          api.getCourses()
         ]);
 
         setUserData(user);
 
-        const getStats = (query: string) => {
+        const getStats = async (query: string) => {
           const course = courses.find((c: any) => c.title.toLowerCase().includes(query.toLowerCase()));
           if (!course) return { percent: 0, id: 0 };
-          
-          // Using your logic: check completions against this course's lessons
-          const courseLessonIds = course.lessons?.map((l: any) => l.id) || [];
-          const finished = completions.filter((c: any) => courseLessonIds.includes(c.lesson_id)).length;
-          const total = course.lessons?.length || 4; // Fallback to 4
-          
+
+          const progress = await api.getCourseProgress(course.id);
           return {
-            percent: Math.round((finished / total) * 100),
+            percent: Math.round(progress.progress_percent),
             id: course.id
           };
         };
 
+        const [python, sql, r] = await Promise.all([
+          getStats('python'),
+          getStats('sql'),
+          getStats('r')
+        ]);
+
         setProgressData({
-          python: getStats('python'),
-          sql: getStats('sql'),
-          r: getStats('r')
+          python,
+          sql,
+          r
         });
 
       } catch (err) {

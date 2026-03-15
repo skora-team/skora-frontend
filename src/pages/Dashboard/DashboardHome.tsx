@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { api } from '../../services/api';
-import type { CourseSummary } from '../../types/api.types';
+import type { CourseProgress, CourseSummary } from '../../types/api.types';
 import { Code2, Database, Terminal, PlayCircle, Loader2, AlertTriangle, TrendingUp } from 'lucide-react';
 import { DashboardLayout } from '../../components/layout/DashboardLayout';
 
@@ -16,7 +16,7 @@ const getIcon = (title: string) => {
 
 export function DashboardHome() {
   const [courses, setCourses] = useState<CourseSummary[]>([]);
-  const [completions, setCompletions] = useState<number[]>([]); // Store Completed Lesson IDs
+  const [progressByCourse, setProgressByCourse] = useState<Record<number, CourseProgress>>({});
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
 
@@ -30,17 +30,17 @@ export function DashboardHome() {
         const courseList = Array.isArray(coursesData) ? coursesData : [];
         setCourses(courseList);
 
-        // 2. Fetch User Completions (User ID 1)
-        // If this fails, we catch it but still show courses (just with 0% progress)
+        // 2. Fetch per-course backend progress.
         try {
-          const completionData = await api.getUserCompletions();
-          // Extract just the lesson_ids into a simple array: [101, 102, 205]
-          const completedIds = Array.isArray(completionData) 
-            ? completionData.map((c: any) => c.lesson_id) 
-            : [];
-          setCompletions(completedIds);
+          const progressEntries = await Promise.all(
+            courseList.map(async (course) => {
+              const progress = await api.getCourseProgress(course.id);
+              return [course.id, progress] as const;
+            })
+          );
+          setProgressByCourse(Object.fromEntries(progressEntries));
         } catch (compError) {
-          console.warn("Could not load completions:", compError);
+          console.warn("Could not load course progress:", compError);
         }
 
       } catch (err: any) {
@@ -85,22 +85,8 @@ export function DashboardHome() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {courses.map((course) => {
             const Icon = getIcon(course.title);
-            
-            // --- PROGRESS CALCULATION LOGIC ---
-            // NOTE: Since the /courses API doesn't give us "total lessons" count,
-            // we will estimate specific progress or just show a count for now.
-            // If you know Python has 10 lessons, we can calc %.
-            // For now, let's assume a standard 10 lessons per course to show the visual bar working.
-            // In a real app, 'course' object should have 'total_lessons'.
-            
-            // Let's count how many completed lessons belong to this course (mock logic since we lack course_id in simple completion list usually)
-            // Ideally, we filter completions by course. For this visual demo, 
-            // I'll show a random progress or 0 if no completions found to simulate it working.
-            
-            // SIMULATION FOR VISUALS (Replace with real logic if API provides course_id in completions)
-            const completedCount = completions.length; // Just using total completions as a placeholder
-            const totalLessonsEstimate = 20; 
-            const progressPercent = Math.min(100, Math.round((completedCount / totalLessonsEstimate) * 100));
+            const progress = progressByCourse[course.id];
+            const progressPercent = progress?.progress_percent ?? 0;
 
             return (
               <Link 

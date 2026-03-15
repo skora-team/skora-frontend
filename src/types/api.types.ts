@@ -52,3 +52,21 @@ export interface Completion {
   course_id?: number;
   score?: number;
 }
+
+export interface LessonProgress {
+  lesson_id: number;
+  title: string;
+  order_index: number;
+  is_completed: boolean;
+  score?: number | null;
+}
+
+export interface CourseProgress {
+  user_id: number;
+  course_id: number;
+  total_lessons: number;
+  completed_lessons: number;
+  progress_percent: number;
+  next_lesson_id?: number | null;
+  lessons: LessonProgress[];
+}
