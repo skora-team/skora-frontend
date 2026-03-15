@@ -40,11 +40,6 @@ export function LessonNode({ lesson, status, isLast }: LessonNodeProps) {
 
   const currentStyle = styles[status];
 
-  // Component that wraps the card content
-  // If locked, we use a <div> so it's not clickable.
-  // If unlocked/completed, we use a <Link>.
-  const CardWrapper = isLocked ? 'div' : Link;
-
   return (
     <div className="flex relative pl-8 pb-12">
       {!isLast && (
@@ -55,35 +50,52 @@ export function LessonNode({ lesson, status, isLast }: LessonNodeProps) {
         {currentStyle.icon}
       </div>
 
-      <CardWrapper 
-        {...(!isLocked ? { to: `/course/${lesson.course_id}/lesson/${lesson.id}` } : {})}
-        className={`flex-1 ml-4 p-4 border-l-2 ${currentStyle.border} ${currentStyle.bg} ${currentStyle.cursor} transition-all group block select-none`}
-      >
-        <div className="flex justify-between items-start">
-          <h3 className={`font-bold font-pixel text-sm uppercase tracking-wider ${currentStyle.text}`}>
-            {lesson.title}
-          </h3>
-          <span className="text-[10px] font-mono text-[var(--text-muted)]">
-            IDX: {lesson.order_index}
-          </span>
-        </div>
-        
-        <p className="text-xs text-[var(--text-muted)] mt-2 font-mono">
-          {isLocked ? '// ACCESS DENIED' : '// CLICK TO START MISSION'}
-        </p>
+      {isLocked ? (
+        <div
+          className={`flex-1 ml-4 p-4 border-l-2 ${currentStyle.border} ${currentStyle.bg} ${currentStyle.cursor} transition-all group block select-none`}
+        >
+          <div className="flex justify-between items-start">
+            <h3 className={`font-bold font-pixel text-sm uppercase tracking-wider ${currentStyle.text}`}>
+              {lesson.title}
+            </h3>
+            <span className="text-[10px] font-mono text-[var(--text-muted)]">
+              IDX: {lesson.order_index}
+            </span>
+          </div>
 
-        {/* Visual feedback for locked state */}
-        {isLocked && (
+          <p className="text-xs text-[var(--text-muted)] mt-2 font-mono">
+            // ACCESS DENIED
+          </p>
+
           <div className="mt-4 h-1 w-full bg-white/5 overflow-hidden">
-            <div className="h-full w-1/3 bg-red-500/20 animate-[move_2s_linear_infinite]" 
-                 style={{ 
-                   backgroundImage: 'linear-gradient(90deg, transparent, rgba(239, 68, 68, 0.5), transparent)',
-                   backgroundSize: '200% 100%' 
-                 }} 
+            <div
+              className="h-full w-1/3 bg-red-500/20 animate-[move_2s_linear_infinite]"
+              style={{
+                backgroundImage: 'linear-gradient(90deg, transparent, rgba(239, 68, 68, 0.5), transparent)',
+                backgroundSize: '200% 100%'
+              }}
             />
           </div>
-        )}
-      </CardWrapper>
+        </div>
+      ) : (
+        <Link
+          to={`/course/${lesson.course_id}/lesson/${lesson.id}`}
+          className={`flex-1 ml-4 p-4 border-l-2 ${currentStyle.border} ${currentStyle.bg} ${currentStyle.cursor} transition-all group block select-none`}
+        >
+          <div className="flex justify-between items-start">
+            <h3 className={`font-bold font-pixel text-sm uppercase tracking-wider ${currentStyle.text}`}>
+              {lesson.title}
+            </h3>
+            <span className="text-[10px] font-mono text-[var(--text-muted)]">
+              IDX: {lesson.order_index}
+            </span>
+          </div>
+
+          <p className="text-xs text-[var(--text-muted)] mt-2 font-mono">
+            // CLICK TO START MISSION
+          </p>
+        </Link>
+      )}
     </div>
   );
 }

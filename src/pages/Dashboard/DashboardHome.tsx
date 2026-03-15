@@ -33,7 +33,7 @@ export function DashboardHome() {
         // 2. Fetch User Completions (User ID 1)
         // If this fails, we catch it but still show courses (just with 0% progress)
         try {
-          const completionData = await api.getUserCompletions(1);
+          const completionData = await api.getUserCompletions();
           // Extract just the lesson_ids into a simple array: [101, 102, 205]
           const completedIds = Array.isArray(completionData) 
             ? completionData.map((c: any) => c.lesson_id) 

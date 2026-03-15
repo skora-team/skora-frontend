@@ -37,11 +37,7 @@ export function LessonNode({ lesson, isLast }: LessonNodeProps) {
       onMouseLeave={() => setShowInfo(false)}
     >
       {/* 🔊 AUDIO */}
-<<<<<<< HEAD
-      <audio ref={audioRef} src="/sounds/chest-open.mp3" preload="auto" />
-=======
-      <audio ref={audioRef} src="/public/chest-open.mp3" preload="auto" />
->>>>>>> origin/Top/Omkar
+      <audio ref={audioRef} src="/chest-open.mp3" preload="auto" />
 
       {/* ================= INFO BOX ================= */}
       {showInfo && (
@@ -95,7 +91,6 @@ export function LessonNode({ lesson, isLast }: LessonNodeProps) {
       )}
 
       {/* ================= CHEST IMAGE ================= */}
-<<<<<<< HEAD
       <img
         src="/chests/treasure-chest.png"
         alt="Chest"
@@ -103,7 +98,7 @@ export function LessonNode({ lesson, isLast }: LessonNodeProps) {
         className={clsx(
           "transition-all duration-200 select-none",
           lesson.status === "unlocked" &&
-            "cursor-pointer hover:scale-110",
+            "cursor-pointer hover:scale-110 animate-bounce-pixel",
           lesson.status === "locked" &&
             "opacity-60 grayscale cursor-not-allowed",
           isOpening && "animate-chest-open"
@@ -115,28 +110,6 @@ export function LessonNode({ lesson, isLast }: LessonNodeProps) {
         }}
         draggable={false}
       />
-=======
-     <img
-  src="/chests/treasure-chest.png"
-  alt="Chest"
-  onClick={handleOpen}
-  className={clsx(
-    "transition-all duration-200 select-none",
-    lesson.status === "unlocked" &&
-      "cursor-pointer hover:scale-110 animate-bounce-pixel",
-    lesson.status === "locked" &&
-      "opacity-60 grayscale cursor-not-allowed",
-    isOpening && "animate-chest-open"
-  )}
-  style={{
-    width: 96,
-    height: 96,
-    imageRendering: "pixelated",
-  }}
-  draggable={false}
-/>
-
->>>>>>> origin/Top/Omkar
 
       {/* ================= LABEL ================= */}
       <div className="mt-3 text-xs font-bold text-center text-slate-800 max-w-[160px]">

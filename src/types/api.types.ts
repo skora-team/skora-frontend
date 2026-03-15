@@ -15,12 +15,16 @@ export interface Lesson {
 export interface AnswerOption {
   id: number;
   text: string;
+  option_text?: string;
+  answer_text?: string;
   is_correct?: boolean;
 }
 
 export interface Question {
   id: number;
-  text: string;
+  text?: string;
+  question_text?: string;
   type: string;
   options?: AnswerOption[];
+  answer_options?: AnswerOption[];
 }

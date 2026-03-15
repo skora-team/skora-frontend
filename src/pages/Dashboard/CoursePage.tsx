@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import { api, auth } from '../../services/api'; // Added auth to get current operator
+import { api } from '../../services/api';
 import type { Lesson } from '../../types/api.types';
 import { DashboardLayout } from '../../components/layout/DashboardLayout';
 import { LessonNode } from '../../components/dashboard/LessonNode';

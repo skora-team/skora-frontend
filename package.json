@@ -12,12 +12,6 @@
   "dependencies": {
     "clsx": "^2.1.1",
     "framer-motion": "^12.23.25",
-<<<<<<< HEAD
-    "lucide-react": "^0.556.0",
-    "react": "^19.2.0",
-    "react-dom": "^19.2.0",
-    "react-router-dom": "^7.10.1"
-=======
     "gsap": "^3.14.2",
     "lucide-react": "^0.556.0",
     "react": "^19.2.0",
@@ -28,15 +22,11 @@
     "rehype-highlight": "^7.0.2",
     "remark-breaks": "^4.0.0",
     "remark-gfm": "^4.0.1"
->>>>>>> origin/Top/Omkar
   },
   "devDependencies": {
     "@eslint/js": "^9.39.1",
     "@tailwindcss/postcss": "^4.1.17",
-<<<<<<< HEAD
-=======
     "@tailwindcss/vite": "^4.2.1",
->>>>>>> origin/Top/Omkar
     "@types/node": "^24.10.1",
     "@types/react": "^19.2.5",
     "@types/react-dom": "^19.2.3",

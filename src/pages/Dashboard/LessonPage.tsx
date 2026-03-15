@@ -6,11 +6,30 @@ import { DashboardLayout } from '../../components/layout/DashboardLayout';
 import { LessonContent } from '../../components/dashboard/LessonContent';
 import { ChevronLeft, CheckCircle2, Circle, Play } from 'lucide-react';
 
+function getQuestionText(q: Question): string {
+  return q.question_text ?? q.text ?? 'Untitled question';
+}
+
+function getQuestionOptions(q: Question) {
+  const rawOptions = q.options ?? q.answer_options ?? [];
+  if (rawOptions.length > 0) {
+    return rawOptions.map((opt, index) => ({
+      id: opt.id ?? index + 1,
+      text: opt.text ?? opt.option_text ?? opt.answer_text ?? `Option ${index + 1}`,
+      is_correct: opt.is_correct
+    }));
+  }
+
+  return [
+    { id: 1, text: 'True', is_correct: true },
+    { id: 2, text: 'False', is_correct: false }
+  ];
+}
+
 export function LessonPage() {
   const { courseId, lessonId } = useParams();
   
   // Data State
-  const [courseTitle, setCourseTitle] = useState('Module');
   const [lesson, setLesson] = useState<Lesson | null>(null);
   const [questions, setQuestions] = useState<Question[]>([]);
   
@@ -25,12 +44,7 @@ export function LessonPage() {
       setLoading(true);
       
       try {
-        // 1. Fetch Course Info
-        const courses = await api.getCourses();
-        const c = Array.isArray(courses) ? courses.find(x => x.id === Number(courseId)) : null;
-        if (c) setCourseTitle(c.title);
-
-        // 2. Fetch Lessons to find order_index
+        // Fetch lessons to find order_index
         const lessons = await api.getLessons(Number(courseId));
         const currentLesson = lessons.find(l => l.id === Number(lessonId));
         
@@ -72,7 +86,7 @@ export function LessonPage() {
           <h1 className="text-3xl font-bold text-[var(--text-main)]">{lesson.title}</h1>
         </header>
         
-        <LessonContent title={lesson.title} courseTitle={courseTitle} apiContent={lesson.content} />
+        <LessonContent apiContent={lesson.content ?? ''} />
 
         <section className="bg-[var(--bg-sidebar)] border-t-4 border-[var(--accent)] rounded-lg shadow-2xl overflow-hidden mt-12">
           <div className="bg-[var(--bg-main)] p-6 border-b border-[var(--border-color)] flex justify-between">
@@ -92,16 +106,11 @@ export function LessonPage() {
                     <span className="text-[var(--text-muted)] mr-2">
                       {idx + 1}/{questions.length}.
                     </span>
-                    {/* FIXED: Changed q.text to q.question_text */}
-                    {q.question_text || q.text} 
+                    {getQuestionText(q)}
                   </h3>
                   
                   <div className="grid gap-3">
-                    {/* 
-                       Note: Your backend JSON doesn't include an 'options' array. 
-                       This fallback will display for every question.
-                    */}
-                    {(q.options || [{id: 1, text: "True", is_correct: true}, {id: 2, text: "False", is_correct: false}]).map((opt, optIdx) => {
+                    {getQuestionOptions(q).map((opt, optIdx) => {
                       const isSelected = selectedAnswers[q.id] === opt.id;
                       let cls = "border-[var(--border-color)] bg-[var(--bg-main)]/50 text-[var(--text-muted)]";
                       

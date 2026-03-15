@@ -13,7 +13,6 @@ const CourseCard: React.FC<CourseCardProps> = ({
   category,
   title,
   description,
-  level,
   image,
 }) => {
   return (

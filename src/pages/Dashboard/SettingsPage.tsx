@@ -2,7 +2,6 @@ import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { api, auth } from '../../services/api'; 
 import { DashboardLayout } from '../../components/layout/DashboardLayout';
-import { useTheme } from '../../context/ThemeContext';
 import { User, Cpu, Loader2, ShieldAlert, Terminal, Database, Code2, Zap, ArrowRight } from 'lucide-react';
 
 // Upgraded Tactical Bar with 4 Blocks
@@ -63,7 +62,6 @@ const TacticalBar = ({ percent, label, icon: Icon, courseId }: { percent: number
 };
 
 export function SettingsPage() {
-  const { theme, toggleTheme } = useTheme();
   const [userData, setUserData] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [sessionError, setSessionError] = useState(false);
