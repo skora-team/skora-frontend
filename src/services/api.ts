@@ -23,6 +23,26 @@ function getProgressVersion() {
   return localStorage.getItem(PROGRESS_VERSION_KEY) ?? '0';
 }
 
+async function getOrHydrateUserId(): Promise<number | null> {
+  const existingId = auth.getUserId();
+  if (existingId) return existingId;
+
+  const token = localStorage.getItem('token');
+  if (!token) return null;
+
+  try {
+    const me = await fetchJson<{ id: number }>('/me/');
+    if (me?.id) {
+      auth.setUserId(me.id);
+      return me.id;
+    }
+  } catch (error) {
+    console.error('[SESSION] Failed to hydrate user id from /me:', error);
+  }
+
+  return null;
+}
+
 async function fetchJson<T>(endpoint: string, options: RequestInit = {}): Promise<T> {
   try {
     // 1. Ensure path starts with /
@@ -77,7 +97,7 @@ export const api = {
   getUsers: () => fetchJson<any[]>('/users/'),
 
   getUserProfile: async () => {
-    const id = auth.getUserId();
+    const id = await getOrHydrateUserId();
     if (!id) throw new Error("NO_SESSION");
     
     // Try 'me' first, then specific ID, then list find
@@ -94,7 +114,7 @@ export const api = {
   },
 
   getUserCompletions: async () => {
-    const id = auth.getUserId();
+    const id = await getOrHydrateUserId();
     if (!id) return [];
     const progressVersion = getProgressVersion();
     
@@ -123,8 +143,8 @@ export const api = {
       body: JSON.stringify(submission)
     }),
   
-  markLessonComplete: (courseId: number, lessonId: number, score: number) => {
-    const userId = auth.getUserId();
+  markLessonComplete: async (courseId: number, lessonId: number, score: number) => {
+    const userId = await getOrHydrateUserId();
     if (!userId) throw new Error('NO_SESSION');
     return fetchJson<Completion>(`/users/${userId}/completions?lesson_id=${lessonId}&course_id=${courseId}&score=${score}`, {
       method: 'POST'

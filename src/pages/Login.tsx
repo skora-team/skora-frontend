@@ -42,20 +42,39 @@ const Login: React.FC = () => {
         // 2. SAVE TOKEN
         localStorage.setItem("token", data.access_token);
 
-        // 3. REAL ID LOGIC (Ensures Zoro stays Zoro and Omkar stays Omkar)
+        // 3. Sync operator_id from authenticated identity first.
         try {
-          const usersRes = await fetch(`${BASE_URL}/users/`);
-          const users = await usersRes.json();
-          
-          // Find the operator in the list by their codename
-          const currentOperator = users.find(
-            (u: any) => u.username?.toLowerCase() === username.toLowerCase() || 
-                        u.name?.toLowerCase() === username.toLowerCase()
-          );
+          const meRes = await fetch(`${BASE_URL}/me/`, {
+            headers: {
+              Authorization: `Bearer ${data.access_token}`,
+            },
+          });
 
-          if (currentOperator) {
-            auth.setUserId(currentOperator.id); // Save the database ID (8, 9, etc.)
-            console.log(`Operator ID ${currentOperator.id} synchronized.`);
+          if (meRes.ok) {
+            const me = await meRes.json();
+            if (me?.id) {
+              auth.setUserId(me.id);
+              console.log(`Operator ID ${me.id} synchronized from /me.`);
+            }
+          } else {
+            // Fallback path for environments where /me may be unavailable.
+            const usersRes = await fetch(`${BASE_URL}/users/`, {
+              headers: {
+                Authorization: `Bearer ${data.access_token}`,
+              },
+            });
+            const users = await usersRes.json();
+
+            const currentOperator = users.find(
+              (u: any) =>
+                u.username?.toLowerCase() === username.toLowerCase() ||
+                u.name?.toLowerCase() === username.toLowerCase()
+            );
+
+            if (currentOperator) {
+              auth.setUserId(currentOperator.id);
+              console.log(`Operator ID ${currentOperator.id} synchronized from /users.`);
+            }
           }
         } catch (idErr) {
           console.error("Critical: ID Sync failed.");
