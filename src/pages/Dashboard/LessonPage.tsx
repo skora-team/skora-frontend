@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { api } from '../../services/api';
-import type { Lesson, Question } from '../../types/api.types';
+import type { AnswerOption, Lesson, Question } from '../../types/api.types';
 import { DashboardLayout } from '../../components/layout/DashboardLayout';
 import { LessonContent } from '../../components/dashboard/LessonContent';
 import { ChevronLeft, CheckCircle2, Circle, Play } from 'lucide-react';
@@ -10,8 +10,8 @@ function getQuestionText(q: Question): string {
   return q.question_text ?? q.text ?? 'Untitled question';
 }
 
-function getQuestionOptions(q: Question) {
-  const rawOptions = q.options ?? q.answer_options ?? [];
+function getQuestionOptions(q: Question, fetchedOptions: AnswerOption[] = []) {
+  const rawOptions = fetchedOptions.length > 0 ? fetchedOptions : (q.options ?? q.answer_options ?? []);
   if (rawOptions.length > 0) {
     return rawOptions.map((opt, index) => ({
       id: opt.id ?? index + 1,
@@ -20,10 +20,7 @@ function getQuestionOptions(q: Question) {
     }));
   }
 
-  return [
-    { id: 1, text: 'True', is_correct: true },
-    { id: 2, text: 'False', is_correct: false }
-  ];
+  return [];
 }
 
 export function LessonPage() {
@@ -32,6 +29,7 @@ export function LessonPage() {
   // Data State
   const [lesson, setLesson] = useState<Lesson | null>(null);
   const [questions, setQuestions] = useState<Question[]>([]);
+  const [answersByQuestion, setAnswersByQuestion] = useState<Record<number, AnswerOption[]>>({});
   
   // UI State
   const [loading, setLoading] = useState(true);
@@ -127,10 +125,30 @@ export function LessonPage() {
           console.log(`Fetching questions for Order Index: ${currentLesson.order_index}`);
           try {
             const qs = await api.getRandomQuestionsByOrder(Number(courseId), currentLesson.order_index, 10);
-            setQuestions(Array.isArray(qs) ? qs : []);
+            const normalizedQuestions = Array.isArray(qs) ? qs : [];
+            setQuestions(normalizedQuestions);
+
+            if (normalizedQuestions.length > 0) {
+              try {
+                const answerEntries = await Promise.all(
+                  normalizedQuestions.map(async (question) => {
+                    const answers = await api.getQuestionAnswers(Number(courseId), currentLesson.id, question.id);
+                    return [question.id, Array.isArray(answers) ? answers : []] as const;
+                  })
+                );
+
+                setAnswersByQuestion(Object.fromEntries(answerEntries));
+              } catch (answersError) {
+                console.error('Failed to fetch question answers:', answersError);
+                setAnswersByQuestion({});
+              }
+            } else {
+              setAnswersByQuestion({});
+            }
           } catch (error) {
             console.error('Failed to fetch questions:', error);
             setQuestions([]); // Keep as empty to show no questions message
+            setAnswersByQuestion({});
           }
         }
 
@@ -173,6 +191,11 @@ export function LessonPage() {
             ) : (
               questions.map((q, idx) => (
                 <div key={`question-${q.id || idx}`}>
+                  {(() => {
+                    const questionOptions = getQuestionOptions(q, answersByQuestion[q.id]);
+
+                    return (
+                      <>
                   <h3 className="text-lg font-bold text-[var(--text-main)] mb-4">
                     <span className="text-[var(--text-muted)] mr-2">
                       {idx + 1}/{questions.length}.
@@ -180,8 +203,13 @@ export function LessonPage() {
                     {getQuestionText(q)}
                   </h3>
                   
-                  <div className="grid gap-3">
-                    {getQuestionOptions(q).map((opt, optIdx) => {
+                  {questionOptions.length === 0 ? (
+                    <div className="rounded border border-dashed border-[var(--border-color)] px-4 py-3 text-sm font-mono text-[var(--text-muted)]">
+                      ANSWER OPTIONS UNAVAILABLE FOR THIS QUESTION.
+                    </div>
+                  ) : (
+                    <div className="grid gap-3">
+                    {questionOptions.map((opt, optIdx) => {
                       const isSelected = selectedAnswers[q.id] === opt.id;
                       let cls = "border-[var(--border-color)] bg-[var(--bg-main)]/50 text-[var(--text-muted)]";
                       
@@ -206,7 +234,11 @@ export function LessonPage() {
                         </button>
                       );
                     })}
-                  </div>
+                    </div>
+                  )}
+                      </>
+                    );
+                  })()}
                 </div>
               ))
             )}

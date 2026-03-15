@@ -14,7 +14,8 @@ export interface Lesson {
 
 export interface AnswerOption {
   id: number;
-  text: string;
+  question_id?: number;
+  text?: string;
   option_text?: string;
   answer_text?: string;
   is_correct?: boolean;

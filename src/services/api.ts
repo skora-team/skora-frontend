@@ -1,4 +1,4 @@
-import type { Completion, Lesson, Question, QuizResult, QuizSubmission } from '../types/api.types';
+import type { AnswerOption, Completion, Lesson, Question, QuizResult, QuizSubmission } from '../types/api.types';
 
 const BASE_URL = 'https://skora-backend.onrender.com'; 
 const PROGRESS_VERSION_KEY = 'progress_version';
@@ -132,6 +132,9 @@ export const api = {
   getCourses: () => fetchJson<any[]>('/courses/'),
   
   getLessons: (courseId: number) => fetchJson<Lesson[]>(`/courses/${courseId}/lessons/`),
+
+  getQuestionAnswers: (courseId: number, lessonId: number, questionId: number) =>
+    fetchJson<AnswerOption[]>(`/courses/${courseId}/lessons/${lessonId}/questions/${questionId}/answers`),
 
   // Path fixed to match documentation screenshot
   getRandomQuestionsByOrder: (courseId: number, orderIndex: number, count: number = 10) => 
