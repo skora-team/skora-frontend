@@ -1,38 +1,33 @@
 /** @type {import('tailwindcss').Config} */
-export default {
+module.exports = {
   content: [
     "./index.html",
     "./src/**/*.{js,ts,jsx,tsx}",
   ],
-
-  // 🔥 THIS FIXES YOUR ISSUE
-  safelist: [
-    "animate-chest-open",
-    "animate-bounce-pixel",
-    "animate-shake",
-  ],
-
   theme: {
     extend: {
+      colors: {
+        'skora-dark-navy': '#0f0f1a', 
+        'skora-neon-orange': '#ff7b00',
+        'skora-python-main': '#FACC15', 
+        'skora-r-main': '#3B82F6', 
+        'skora-sql-main': '#B45309', 
+        // Glow colors for hover effects
+        'skora-glow-python': '#FDE047',
+        'skora-glow-r': '#60A5FA',
+        'skora-glow-sql': '#FDBA74',
+      },
       fontFamily: {
         'press-start': ['"Press Start 2P"', 'cursive'],
       },
-      colors: {
-        skora: {
-          'dark-navy': '#0f0f1a',
-          'neon-orange': '#ff7b00',
-          'python-main': '#FFD700',
-          'r-main': '#3b82f6',
-          'sql-main': '#d97706',
-        }
-      },
       boxShadow: {
-        'pixel-shadow': '4px 4px 0px 0px rgba(0,0,0,0.5)',
-        'pixel-glow-yellow': '0 0 10px #FFD700',
-        'pixel-glow-blue': '0 0 10px #3b82f6',
-        'pixel-glow-brown': '0 0 10px #d97706',
-      }
+        // Defines the pixel shadow and default glow
+        'pixel-glow-yellow': '0 0 5px #FDE047, 0 0 10px #FACC15',
+        'pixel-glow-blue': '0 0 5px #60A5FA, 0 0 10px #3B82F6',
+        'pixel-glow-brown': '0 0 5px #FDBA74, 0 0 10px #B45309',
+        'pixel-shadow': '4px 4px 0 #000', 
+      },
     },
   },
   plugins: [],
-};
+}

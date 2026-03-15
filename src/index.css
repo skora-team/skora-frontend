@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 @import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
 
 
@@ -464,3 +465,17 @@ body.light .sci-markdown p {
   display: inline-block;
 }
 
+=======
+
+@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+
+body {
+  background-color: #3b0000; 
+  font-family: 'Press Start 2P', cursive;
+  color: white;
+}
+>>>>>>> fe9de68 (First Commit)
