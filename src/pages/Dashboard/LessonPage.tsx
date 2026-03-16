@@ -75,7 +75,9 @@ export function LessonPage() {
 
       setQuestionResults(normalizedResults);
       setScore(result.correct_count);
-      setTotalQuestions(result.total_questions);
+      // TODO: Backend returns total_questions as 100 (full dataset), not actual questions shown (10)
+      // Fix backend to return count of questions in this quiz, not total in dataset
+      setTotalQuestions(10);
       setQuizSubmitted(true);
       setCompletionSaved(null);
 
@@ -290,7 +292,7 @@ export function LessonPage() {
 
           {quizSubmitted && score !== null && (
             <div className="px-6 pb-6 text-sm font-mono text-[var(--text-main)]">
-              SCORE: {score}/{totalQuestions ?? questions.length}
+              SCORE: {score}/{totalQuestions}
             </div>
           )}
 
