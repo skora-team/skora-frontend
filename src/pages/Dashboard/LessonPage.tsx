@@ -5,6 +5,10 @@ import type { AnswerOption, Lesson, Question, RecommendationTarget } from '../..
 import { DashboardLayout } from '../../components/layout/DashboardLayout';
 import { LessonContent } from '../../components/dashboard/LessonContent';
 import { ChevronLeft, CheckCircle2, Circle, Play } from 'lucide-react';
+import { useGameState } from '../../hooks/useGameState';
+import { GameHUD } from '../../components/GameHUD';
+import { XPFloatingText } from '../../components/XPFloatingText';
+import { QuizResultsCard } from '../../components/QuizResultsCard';
 
 function getQuestionText(q: Question): string {
   return q.question_text ?? q.text ?? 'Untitled question';
@@ -42,6 +46,10 @@ export function LessonPage() {
   const [questionResults, setQuestionResults] = useState<Record<number, boolean>>({});
   const [completionSaved, setCompletionSaved] = useState<boolean | null>(null);
   const [nextRecommendation, setNextRecommendation] = useState<RecommendationTarget | null>(null);
+
+  // Gamification State
+  const gameState = useGameState(lesson?.id ?? 0);
+  const [lastAnsweredQuestionId, setLastAnsweredQuestionId] = useState<number | null>(null);
 
   const answeredCount = questions.reduce((count, q) => {
     return selectedAnswers[q.id] !== undefined ? count + 1 : count;
@@ -123,6 +131,8 @@ export function LessonPage() {
     setQuestionResults({});
     setCompletionSaved(null);
     setNextRecommendation(null);
+    gameState.resetMetrics();
+    setLastAnsweredQuestionId(null);
   }
 
   useEffect(() => {
@@ -196,9 +206,20 @@ export function LessonPage() {
         <LessonContent apiContent={lesson.content ?? ''} />
 
         <section className="bg-[var(--bg-sidebar)] border-t-4 border-[var(--accent)] rounded-lg shadow-2xl overflow-hidden mt-12">
-          <div className="bg-[var(--bg-main)] p-6 border-b border-[var(--border-color)] flex justify-between">
-            <h2 className="text-xl font-bold font-pixel text-[var(--text-main)]">KNOWLEDGE CHECK</h2>
-            <Play className="text-[var(--accent)]" />
+          <div className="bg-[var(--bg-main)] p-6 border-b border-[var(--border-color)] space-y-4">
+            <div className="flex justify-between items-center mb-4">
+              <h2 className="text-xl font-bold font-pixel text-[var(--text-main)]">KNOWLEDGE CHECK</h2>
+              <Play className="text-[var(--accent)]" />
+            </div>
+            {!quizSubmitted && (
+              <GameHUD
+                streak={gameState.metrics.streak}
+                totalXP={gameState.metrics.totalXP}
+                multiplier={gameState.metrics.xpMultiplier}
+                currentQuestion={gameState.metrics.answeredQuestions.size + 1}
+                totalQuestions={questions.length}
+              />
+            )}
           </div>
           
           <div className="p-8 space-y-10">
@@ -244,7 +265,14 @@ export function LessonPage() {
                       return (
                         <button 
                           key={`opt-${q.id}-${opt.id || optIdx}`} 
-                          onClick={() => !quizSubmitted && setSelectedAnswers(p => ({...p, [q.id]: opt.id}))} 
+                          onClick={() => {
+                            if (!quizSubmitted) {
+                              const isCorrect = opt.is_correct || false;
+                              gameState.recordAnswer(q.id, isCorrect);
+                              setLastAnsweredQuestionId(q.id);
+                              setSelectedAnswers(p => ({...p, [q.id]: opt.id}));
+                            }
+                          }} 
                           className={`w-full text-left p-4 border rounded flex items-center gap-3 transition-all ${cls}`}
                         >
                           {isSelected ? <CheckCircle2 size={18}/> : <Circle size={18}/>} 
@@ -290,9 +318,15 @@ export function LessonPage() {
              )}
           </div>
 
-          {quizSubmitted && score !== null && (
-            <div className="px-6 pb-6 text-sm font-mono text-[var(--text-main)]">
-              SCORE: {score}/{totalQuestions}
+          {quizSubmitted && score !== null && totalQuestions !== null && (
+            <div className="px-6 py-8">
+              <QuizResultsCard
+                score={score}
+                totalQuestions={totalQuestions}
+                totalXP={gameState.metrics.totalXP}
+                streak={gameState.metrics.streak}
+                correctCount={gameState.metrics.correctCount}
+              />
             </div>
           )}
 
@@ -322,6 +356,11 @@ export function LessonPage() {
             </div>
           )}
         </section>
+
+        <XPFloatingText 
+          amount={gameState.lastXPGain?.amount ?? 0}
+          isVisible={lastAnsweredQuestionId !== null && gameState.lastXPGain !== null}
+        />
       </div>
     </DashboardLayout>
   );

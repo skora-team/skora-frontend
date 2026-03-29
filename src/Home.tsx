@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { Link } from "react-router-dom";
 
 import CourseCard from "./components/CourseCard";
@@ -8,6 +8,8 @@ import ScrollFloat from "../src/hooks/ScrollFloat";
 import { UserPlus } from "lucide-react";
 
 const Home: React.FC = () => {
+  const [learnDropdownOpen, setLearnDropdownOpen] = useState(false);
+
   return (
     <>
       {/* ================= NAVBAR ================= */}
@@ -27,21 +29,26 @@ const Home: React.FC = () => {
           </div>
 
           <ul className="flex list-none gap-8">
-            <li className="relative group">
-              <span className="text-white text-base font-medium hover:text-yellow-400 cursor-pointer">
+            <li className="relative">
+              <button 
+                onClick={() => setLearnDropdownOpen(!learnDropdownOpen)}
+                className="text-white text-base font-medium hover:text-yellow-400 cursor-pointer bg-transparent border-none"
+              >
                 Learn ▾
-              </span>
-              <div className="absolute left-0 top-8 bg-gray-900 w-40 rounded-lg hidden group-hover:block z-10">
-                <Link to="/signup" className="block px-4 py-2.5 text-white hover:bg-gray-700">
-                  Python
-                </Link>
-                <Link to="/signup" className="block px-4 py-2.5 text-white hover:bg-gray-700">
-                  R Program
-                </Link>
-                <Link to="/signup" className="block px-4 py-2.5 text-white hover:bg-gray-700">
-                  SQL
-                </Link>
-              </div>
+              </button>
+              {learnDropdownOpen && (
+                <div className="absolute left-0 top-8 bg-gray-900 w-40 rounded-lg z-10">
+                  <Link to="/signup" onClick={() => setLearnDropdownOpen(false)} className="block px-4 py-2.5 text-white hover:bg-gray-700">
+                    Python
+                  </Link>
+                  <Link to="/signup" onClick={() => setLearnDropdownOpen(false)} className="block px-4 py-2.5 text-white hover:bg-gray-700">
+                    R Program
+                  </Link>
+                  <Link to="/signup" onClick={() => setLearnDropdownOpen(false)} className="block px-4 py-2.5 text-white hover:bg-gray-700">
+                    SQL
+                  </Link>
+                </div>
+              )}
             </li>
           </ul>
         </div>
