@@ -11,6 +11,7 @@ import { XPFloatingText } from '../../components/XPFloatingText';
 import { QuizResultsCard } from '../../components/QuizResultsCard';
 import { useAchievements } from '../../hooks/useAchievements';
 import { AchievementsPanel } from '../../components/AchievementsPanel';
+import { AchievementToast } from '../../components/AchievementToast';
 
 function getQuestionText(q: Question): string {
   return q.question_text ?? q.text ?? 'Untitled question';
@@ -57,6 +58,8 @@ export function LessonPage() {
   const { achievements, checkAchievements } = useAchievements();
   const [newlyUnlockedAchievements, setNewlyUnlockedAchievements] = useState<string[]>([]);
   const [quizStartTime] = useState<number>(Date.now());
+  const [toastQueue, setToastQueue] = useState<Array<{ id: string; name: string; icon: string }>>([]);
+  const [currentToast, setCurrentToast] = useState<{ id: string; name: string; icon: string } | null>(null);
 
   const answeredCount = questions.reduce((count, q) => {
     return selectedAnswers[q.id] !== undefined ? count + 1 : count;
@@ -106,6 +109,17 @@ export function LessonPage() {
         lesson?.id ?? 0
       );
       setNewlyUnlockedAchievements(unlockedIds);
+
+      // Queue toasts for each newly unlocked achievement
+      if (unlockedIds.length > 0) {
+        const toasts = unlockedIds
+          .map(id => {
+            const ach = achievements.find(a => a.id === id);
+            return ach ? { id, name: ach.name, icon: ach.icon } : null;
+          })
+          .filter(Boolean) as Array<{ id: string; name: string; icon: string }>;
+        setToastQueue(toasts);
+      }
 
       try {
         // Keep this explicit completion write for dashboard sync.
@@ -207,6 +221,15 @@ export function LessonPage() {
     }
     load();
   }, [courseId, lessonId]);
+
+  // Manage achievement toast queue
+  useEffect(() => {
+    if (toastQueue.length > 0 && !currentToast) {
+      const nextToast = toastQueue[0];
+      setCurrentToast(nextToast);
+      setToastQueue(toastQueue.slice(1));
+    }
+  }, [toastQueue, currentToast]);
 
   if (loading) return <DashboardLayout><div className="flex h-[60vh] items-center justify-center text-[var(--accent)] font-pixel">LOADING DATA...</div></DashboardLayout>;
   if (!lesson) return <DashboardLayout><div className="text-red-500 p-10">Lesson Not Found</div></DashboardLayout>;
@@ -384,6 +407,15 @@ export function LessonPage() {
           amount={gameState.lastXPGain?.amount ?? 0}
           isVisible={lastAnsweredQuestionId !== null && gameState.lastXPGain !== null}
         />
+
+        {currentToast && (
+          <AchievementToast
+            achievementName={currentToast.name}
+            achievementIcon={currentToast.icon}
+            isVisible={!!currentToast}
+            onClose={() => setCurrentToast(null)}
+          />
+        )}
       </div>
     </DashboardLayout>
   );

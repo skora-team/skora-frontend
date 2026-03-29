@@ -4,6 +4,7 @@ import { api } from '../../services/api';
 import type { CourseProgress, CourseSummary } from '../../types/api.types';
 import { Code2, Database, Terminal, PlayCircle, Loader2, AlertTriangle, TrendingUp } from 'lucide-react';
 import { DashboardLayout } from '../../components/layout/DashboardLayout';
+import { useDailyBonus } from '../../hooks/useDailyBonus';
 
 const getIcon = (title: string) => {
   if (!title) return PlayCircle;
@@ -19,6 +20,8 @@ export function DashboardHome() {
   const [progressByCourse, setProgressByCourse] = useState<Record<number, CourseProgress>>({});
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
+  const { bonus, claimBonus } = useDailyBonus();
+  const [bonusXPClaimed, setBonusXPClaimed] = useState(false);
 
   useEffect(() => {
     async function loadDashboardData() {
@@ -64,7 +67,56 @@ export function DashboardHome() {
         </p>
       </header>
 
-      {/* ERROR STATE */}
+      {/* DAILY BONUS CARD */}
+      {!loading && !error && (
+        <div className="mb-8">
+          <div className={`border-2 rounded-lg p-6 transition-all ${
+            bonus.eligibleToday
+              ? 'bg-yellow-500/10 border-yellow-500 shadow-[0_0_20px_rgba(234,179,8,0.3)]'
+              : 'bg-gray-500/5 border-gray-500/30'
+          }`}>
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-4">
+                <div className={`text-4xl ${bonus.eligibleToday ? 'animate-bounce' : 'opacity-50'}`}>
+                  ☀️
+                </div>
+                <div>
+                  <p className="font-pixel text-xs text-[var(--text-muted)] uppercase tracking-tight">
+                    Daily Login Bonus
+                  </p>
+                  <p className={`text-xl font-bold ${bonus.eligibleToday ? 'text-yellow-500' : 'text-gray-500'}`}>
+                    {bonus.eligibleToday ? `+50 XP` : 'Come back tomorrow'}
+                  </p>
+                  <p className="text-xs text-[var(--text-muted)] font-mono mt-1">
+                    🔥 {bonus.daysInARow} days in a row {bonus.daysInARow >= 3 && '(Streak bonus active!)'}
+                  </p>
+                </div>
+              </div>
+              
+              {bonus.eligibleToday && (
+                <button
+                  onClick={() => {
+                    const xp = claimBonus();
+                    if (xp > 0) {
+                      setBonusXPClaimed(true);
+                      setTimeout(() => setBonusXPClaimed(false), 2000);
+                    }
+                  }}
+                  className="px-6 py-3 bg-yellow-500 text-black font-bold font-pixel text-sm rounded hover:bg-yellow-400 transition-all active:scale-95"
+                >
+                  💰 CLAIM
+                </button>
+              )}
+
+              {bonusXPClaimed && (
+                <div className="absolute right-6 text-green-500 font-bold animate-bounce">
+                  ✓ +50 XP Claimed!
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
       {error && (
         <div className="bg-red-900/20 border border-red-500 text-red-400 p-6 rounded-lg flex items-center gap-4 mb-8">
           <AlertTriangle size={32} />
