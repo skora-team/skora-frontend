@@ -3,6 +3,8 @@ import { Link } from 'react-router-dom';
 import { api, auth } from '../../services/api'; 
 import { DashboardLayout } from '../../components/layout/DashboardLayout';
 import { User, Cpu, Loader2, ShieldAlert, Terminal, Database, Code2, Zap, ArrowRight } from 'lucide-react';
+import { useAchievements } from '../../hooks/useAchievements';
+import { AchievementsPanel } from '../../components/AchievementsPanel';
 
 // Upgraded Tactical Bar with 4 Blocks
 const TacticalBar = ({ percent, label, icon: Icon, courseId }: { percent: number, label: string, icon: any, courseId?: number }) => {
@@ -66,6 +68,9 @@ export function SettingsPage() {
   const [loading, setLoading] = useState(true);
   const [sessionError, setSessionError] = useState(false);
   const [availableUsers, setAvailableUsers] = useState<any[]>([]);
+  
+  // Achievements
+  const { achievements } = useAchievements();
   
   const [progressData, setProgressData] = useState({
     python: { percent: 0, id: 0 },
@@ -202,6 +207,11 @@ export function SettingsPage() {
            
           </section>
         </div>
+      </div>
+
+      {/* Achievements Section */}
+      <div className="mt-12 max-w-5xl">
+        <AchievementsPanel achievements={achievements} />
       </div>
     </DashboardLayout>
   );

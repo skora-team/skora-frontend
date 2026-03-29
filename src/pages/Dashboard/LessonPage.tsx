@@ -9,6 +9,8 @@ import { useGameState } from '../../hooks/useGameState';
 import { GameHUD } from '../../components/GameHUD';
 import { XPFloatingText } from '../../components/XPFloatingText';
 import { QuizResultsCard } from '../../components/QuizResultsCard';
+import { useAchievements } from '../../hooks/useAchievements';
+import { AchievementsPanel } from '../../components/AchievementsPanel';
 
 function getQuestionText(q: Question): string {
   return q.question_text ?? q.text ?? 'Untitled question';
@@ -51,6 +53,11 @@ export function LessonPage() {
   const gameState = useGameState(lesson?.id ?? 0);
   const [lastAnsweredQuestionId, setLastAnsweredQuestionId] = useState<number | null>(null);
 
+  // Achievements State
+  const { achievements, checkAchievements } = useAchievements();
+  const [newlyUnlockedAchievements, setNewlyUnlockedAchievements] = useState<string[]>([]);
+  const [quizStartTime] = useState<number>(Date.now());
+
   const answeredCount = questions.reduce((count, q) => {
     return selectedAnswers[q.id] !== undefined ? count + 1 : count;
   }, 0);
@@ -88,6 +95,17 @@ export function LessonPage() {
       setTotalQuestions(10);
       setQuizSubmitted(true);
       setCompletionSaved(null);
+
+      // Check achievements
+      const timeSeconds = (Date.now() - quizStartTime) / 1000;
+      const unlockedIds = checkAchievements(
+        result.correct_count,
+        10,
+        gameState.metrics.streak,
+        timeSeconds,
+        lesson?.id ?? 0
+      );
+      setNewlyUnlockedAchievements(unlockedIds);
 
       try {
         // Keep this explicit completion write for dashboard sync.
@@ -133,6 +151,7 @@ export function LessonPage() {
     setNextRecommendation(null);
     gameState.resetMetrics();
     setLastAnsweredQuestionId(null);
+    setNewlyUnlockedAchievements([]);
   }
 
   useEffect(() => {
@@ -319,13 +338,17 @@ export function LessonPage() {
           </div>
 
           {quizSubmitted && score !== null && totalQuestions !== null && (
-            <div className="px-6 py-8">
+            <div className="px-6 py-8 space-y-6">
               <QuizResultsCard
                 score={score}
                 totalQuestions={totalQuestions}
                 totalXP={gameState.metrics.totalXP}
                 streak={gameState.metrics.streak}
                 correctCount={gameState.metrics.correctCount}
+              />
+              <AchievementsPanel
+                achievements={achievements}
+                newlyUnlockedIds={newlyUnlockedAchievements}
               />
             </div>
           )}
