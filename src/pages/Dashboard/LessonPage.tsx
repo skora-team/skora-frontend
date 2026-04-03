@@ -4,7 +4,7 @@ import { api } from '../../services/api';
 import type { AnswerOption, Lesson, Question, RecommendationTarget } from '../../types/api.types';
 import { DashboardLayout } from '../../components/layout/DashboardLayout';
 import { LessonContent } from '../../components/dashboard/LessonContent';
-import { ChevronLeft, CheckCircle2, Circle, Play } from 'lucide-react';
+import { ChevronLeft, CheckCircle2, Circle, Play, XCircle } from 'lucide-react';
 import { useGameState } from '../../hooks/useGameState';
 import { GameHUD } from '../../components/GameHUD';
 import { XPFloatingText } from '../../components/XPFloatingText';
@@ -46,7 +46,6 @@ export function LessonPage() {
   const [loading, setLoading] = useState(true);
   const [selectedAnswers, setSelectedAnswers] = useState<Record<number, number>>({});
   const [quizSubmitted, setQuizSubmitted] = useState(false);
-  const [submitting, setSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState('');
   const [score, setScore] = useState<number | null>(null);
   const [totalQuestions, setTotalQuestions] = useState<number | null>(null);
@@ -68,17 +67,12 @@ export function LessonPage() {
   // Battle State
   const [enemy, setEnemy] = useState<BattleEnemyConfig | null>(null);
   const battleHook = useBattle({ difficultyTier: 'apprentice', totalQuestions: 10 });
-
-  const answeredCount = questions.reduce((count, q) => {
-    return selectedAnswers[q.id] !== undefined ? count + 1 : count;
-  }, 0);
-
-  const unansweredCount = Math.max(questions.length - answeredCount, 0);
+  const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
+  const [turnInProgress, setTurnInProgress] = useState(false);
 
   async function handleSubmitQuiz() {
     if (!lesson || !courseId || questions.length === 0) return;
 
-    setSubmitting(true);
     setSubmitError('');
 
     try {
@@ -157,8 +151,6 @@ export function LessonPage() {
       setQuizSubmitted(false);
       setCompletionSaved(null);
       setNextRecommendation(null);
-    } finally {
-      setSubmitting(false);
     }
   }
 
@@ -174,6 +166,45 @@ export function LessonPage() {
     gameState.resetMetrics();
     setLastAnsweredQuestionId(null);
     setNewlyUnlockedAchievements([]);
+    setCurrentQuestionIndex(0);
+    setTurnInProgress(false);
+  }
+
+  function handleSubmitTurn() {
+    if (!questions[currentQuestionIndex]) return;
+    
+    const currentQuestion = questions[currentQuestionIndex];
+    const selectedAnswerId = selectedAnswers[currentQuestion.id];
+    
+    if (selectedAnswerId === undefined) return;
+    
+    setTurnInProgress(true);
+    
+    // Check if answer is correct
+    const answers = answersByQuestion[currentQuestion.id] || [];
+    const selectedOption = answers.find(a => a.id === selectedAnswerId);
+    const isCorrect = selectedOption?.is_correct || false;
+    
+    // Update battle state
+    if (isCorrect) {
+      battleHook.recordCorrectAnswer();
+    } else {
+      battleHook.recordWrongAnswer();
+    }
+    
+    // Move to next question or finish
+    if (currentQuestionIndex < questions.length - 1) {
+      // More questions - advance turn
+      setTimeout(() => {
+        setCurrentQuestionIndex(currentQuestionIndex + 1);
+        setTurnInProgress(false);
+      }, 800); // Let battle animation play
+    } else {
+      // Last question - submit quiz
+      setTimeout(() => {
+        handleSubmitQuiz();
+      }, 800);
+    }
   }
 
   useEffect(() => {
@@ -283,67 +314,114 @@ export function LessonPage() {
               <div className="text-center py-8 text-[var(--text-muted)] border border-dashed border-[var(--border-color)]">
                 NO QUESTIONS GENERATED FOR THIS ORDER INDEX ({lesson.order_index})
               </div>
+            ) : !quizSubmitted ? (
+              // TURN-BASED MODE: Show only current question
+              (() => {
+                const q = questions[currentQuestionIndex];
+                const questionOptions = getQuestionOptions(q, answersByQuestion[q.id]);
+                
+                return (
+                  <div className="pb-4">
+                    {/* Turn Counter */}
+                    <div className="mb-6 p-4 bg-[var(--accent-glow)] border border-[var(--accent)] rounded-lg">
+                      <div className="text-center">
+                        <div className="text-sm font-pixel text-[var(--text-muted)]">⚔️ TURN {currentQuestionIndex + 1} OF {questions.length}</div>
+                        <div className="text-2xl font-bold font-pixel text-[var(--accent)] mt-1">KNOWLEDGE STRIKE</div>
+                      </div>
+                    </div>
+
+                    {/* Question */}
+                    <h3 className="text-lg font-bold text-[var(--text-main)] mb-6">
+                      {getQuestionText(q)}
+                    </h3>
+                    
+                    {/* Answer Options */}
+                    {questionOptions.length === 0 ? (
+                      <div className="rounded border border-dashed border-[var(--border-color)] px-4 py-3 text-sm font-mono text-[var(--text-muted)]">
+                        ANSWER OPTIONS UNAVAILABLE FOR THIS QUESTION.
+                      </div>
+                    ) : (
+                      <div className="grid gap-3">
+                        {questionOptions.map((opt, optIdx) => {
+                          const optIsSelected = selectedAnswers[q.id] === opt.id;
+                          let cls = "border-[var(--border-color)] bg-[var(--bg-main)]/50 text-[var(--text-muted)] hover:border-[var(--accent)] hover:bg-[var(--bg-main)]";
+                          
+                          if (optIsSelected) {
+                            cls = "border-[var(--accent)] bg-[var(--accent-glow)] text-[var(--accent)] ring-2 ring-[var(--accent)]/50";
+                          }
+                          
+                          return (
+                            <button 
+                              key={`opt-${q.id}-${opt.id || optIdx}`} 
+                              onClick={() => {
+                                if (!turnInProgress) {
+                                  setSelectedAnswers(p => ({...p, [q.id]: opt.id}));
+                                }
+                              }}
+                              disabled={turnInProgress}
+                              className={`w-full text-left p-4 border rounded flex items-center gap-3 transition-all ${cls} disabled:opacity-50`}
+                            >
+                              {optIsSelected ? <CheckCircle2 size={20} className="flex-shrink-0" /> : <Circle size={20} className="flex-shrink-0" />} 
+                              <span>{opt.text}</span>
+                            </button>
+                          );
+                        })}
+                      </div>
+                    )}
+                  </div>
+                );
+              })()
             ) : (
+              // RESULTS MODE: Show all questions with results
               questions.map((q, idx) => (
-                <div key={`question-${q.id || idx}`}>
+                <div key={`question-result-${q.id || idx}`}>
                   {(() => {
                     const questionOptions = getQuestionOptions(q, answersByQuestion[q.id]);
+                    const wasCorrect = questionResults[q.id] === true;
 
                     return (
                       <>
-                  <h3 className="text-lg font-bold text-[var(--text-main)] mb-4">
-                    <span className="text-[var(--text-muted)] mr-2">
-                      {idx + 1}/{questions.length}.
-                    </span>
-                    {getQuestionText(q)}
-                  </h3>
-                  
-                  {questionOptions.length === 0 ? (
-                    <div className="rounded border border-dashed border-[var(--border-color)] px-4 py-3 text-sm font-mono text-[var(--text-muted)]">
-                      ANSWER OPTIONS UNAVAILABLE FOR THIS QUESTION.
-                    </div>
-                  ) : (
-                    <div className="grid gap-3">
-                    {questionOptions.map((opt, optIdx) => {
-                      const isSelected = selectedAnswers[q.id] === opt.id;
-                      let cls = "border-[var(--border-color)] bg-[var(--bg-main)]/50 text-[var(--text-muted)]";
-                      
-                      if (quizSubmitted) {
-                        if (isSelected && questionResults[q.id] === true) {
-                          cls = "border-green-500 bg-green-500/10 text-green-500";
-                        } else if (isSelected && questionResults[q.id] === false) {
-                          cls = "border-red-500 bg-red-500/10 text-red-500";
-                        }
-                      } else if (isSelected) {
-                        cls = "border-[var(--accent)] bg-[var(--accent-glow)] text-[var(--accent)]";
-                      }
-                      
-                      return (
-                        <button 
-                          key={`opt-${q.id}-${opt.id || optIdx}`} 
-                          onClick={() => {
-                            if (!quizSubmitted) {
-                              const isCorrect = opt.is_correct || false;
-                              gameState.recordAnswer(q.id, isCorrect);
-                              // Update battle state
-                              if (isCorrect) {
-                                battleHook.recordCorrectAnswer();
-                              } else {
-                                battleHook.recordWrongAnswer();
+                        <h3 className="text-lg font-bold text-[var(--text-main)] mb-4">
+                          <span className="text-[var(--text-muted)] mr-2">
+                            {idx + 1}/{questions.length}.
+                          </span>
+                          {getQuestionText(q)}
+                          {wasCorrect ? (
+                            <CheckCircle2 className="inline ml-2 text-green-500" size={20} />
+                          ) : (
+                            <XCircle className="inline ml-2 text-red-500" size={20} />
+                          )}
+                        </h3>
+                        
+                        {questionOptions.length === 0 ? (
+                          <div className="rounded border border-dashed border-[var(--border-color)] px-4 py-3 text-sm font-mono text-[var(--text-muted)]">
+                            ANSWER OPTIONS UNAVAILABLE FOR THIS QUESTION.
+                          </div>
+                        ) : (
+                          <div className="grid gap-3">
+                            {questionOptions.map((opt, optIdx) => {
+                              const optIsSelected = selectedAnswers[q.id] === opt.id;
+                              let cls = "border-[var(--border-color)] bg-[var(--bg-main)]/50 text-[var(--text-muted)]";
+                              
+                              if (optIsSelected && wasCorrect) {
+                                cls = "border-green-500 bg-green-500/10 text-green-500";
+                              } else if (optIsSelected && !wasCorrect) {
+                                cls = "border-red-500 bg-red-500/10 text-red-500";
                               }
-                              setLastAnsweredQuestionId(q.id);
-                              setSelectedAnswers(p => ({...p, [q.id]: opt.id}));
-                            }
-                          }} 
-                          className={`w-full text-left p-4 border rounded flex items-center gap-3 transition-all ${cls}`}
-                        >
-                          {isSelected ? <CheckCircle2 size={18}/> : <Circle size={18}/>} 
-                          {opt.text}
-                        </button>
-                      );
-                    })}
-                    </div>
-                  )}
+                              
+                              return (
+                                <button 
+                                  key={`result-opt-${q.id}-${opt.id || optIdx}`} 
+                                  disabled
+                                  className={`w-full text-left p-4 border rounded flex items-center gap-3 ${cls}`}
+                                >
+                                  {optIsSelected ? <CheckCircle2 size={18}/> : <Circle size={18}/>} 
+                                  {opt.text}
+                                </button>
+                              );
+                            })}
+                          </div>
+                        )}
                       </>
                     );
                   })()}
@@ -355,21 +433,21 @@ export function LessonPage() {
           <div className="p-6 bg-[var(--bg-main)] border-t border-[var(--border-color)] flex justify-end">
              {!quizSubmitted ? (
                <button 
-                 onClick={handleSubmitQuiz}
-                 disabled={questions.length === 0 || unansweredCount > 0 || submitting}
-                 className="bg-[var(--accent)] text-black font-bold font-pixel py-3 px-8 rounded disabled:opacity-50"
+                 onClick={handleSubmitTurn}
+                 disabled={selectedAnswers[questions[currentQuestionIndex]?.id] === undefined || turnInProgress}
+                 className="bg-[var(--accent)] text-black font-bold font-pixel py-3 px-8 rounded disabled:opacity-50 hover:bg-[var(--accent)]/90 transition-all"
                >
-                 {submitting
-                   ? 'SUBMITTING...'
-                   : unansweredCount > 0
-                     ? `ANSWER ${unansweredCount} MORE`
-                     : 'SUBMIT'}
+                 {turnInProgress
+                   ? 'EXECUTING...'
+                   : currentQuestionIndex === questions.length - 1
+                     ? 'FINAL STRIKE'
+                     : `NEXT TURN ▶︎ ${currentQuestionIndex + 1}/${questions.length}`}
                </button> 
              ) : (
                <div className="flex items-center gap-4">
                   <button 
                     onClick={handleRetry}
-                    className="text-[var(--text-muted)] text-xs underline font-pixel"
+                    className="text-[var(--text-muted)] text-xs underline font-pixel hover:text-[var(--accent)]"
                   >
                     RETRY
                   </button>
