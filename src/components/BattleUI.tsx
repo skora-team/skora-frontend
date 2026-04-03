@@ -64,31 +64,31 @@ export const BattleUI: React.FC<BattleUIProps> = ({ enemy, state, children }) =>
       </div>
 
       {/* ENEMY SECTION */}
-      <div className={`mb-12 relative ${shakeEnabled ? 'animate-pulse' : ''}`}>
-        <div className={`border-4 border-[var(--border-color)] bg-black/60 p-8 ${colors.glow} transition-all`}>
+      <div className={`mb-6 relative ${shakeEnabled ? 'animate-pulse' : ''}`}>
+        <div className={`border-4 border-[var(--border-color)] bg-black/60 p-4 ${colors.glow} transition-all`}>
           {/* Enemy Name & Difficulty */}
-          <div className="text-center mb-6">
-            <div className={`text-6xl mb-4 animate-bounce`}>{enemy.emoji}</div>
-            <h2 className={`text-3xl font-pixel font-bold uppercase ${colors.text}`}>
+          <div className="text-center mb-3">
+            <div className={`text-3xl`}>{enemy.emoji}</div>
+            <h2 className={`text-xl font-pixel font-bold uppercase ${colors.text}`}>
               {DIFFICULTY_NAMES[enemy.difficulty]}
             </h2>
-            <p className="text-xs font-mono text-[var(--text-muted)] uppercase mt-2">
+            <p className="text-xs font-mono text-[var(--text-muted)] uppercase">
               {enemy.name}
             </p>
-            <div className={`inline-block mt-2 px-3 py-1 border border-[var(--border-color)] text-[10px] font-pixel ${colors.text}`}>
+            <div className={`inline-block mt-1 px-2 py-0.5 border border-[var(--border-color)] text-[9px] font-pixel ${colors.text}`}>
               {enemy.difficulty.toUpperCase()}
             </div>
           </div>
 
           {/* HEALTH BAR */}
-          <div className="mb-6">
-            <div className="flex justify-between mb-2">
-              <span className="text-[11px] font-mono text-[var(--text-muted)] uppercase">Enemy Health</span>
-              <span className="text-[11px] font-bold text-red-400">
+          <div className="mb-3">
+            <div className="flex justify-between mb-1">
+              <span className="text-[10px] font-mono text-[var(--text-muted)] uppercase">Enemy Health</span>
+              <span className="text-[10px] font-bold text-red-400">
                 {Math.max(0, state.enemyHealth)}/{enemy.maxHealth} HP
               </span>
             </div>
-            <div className="w-full h-6 border-3 border-red-900 bg-black/50 relative overflow-hidden">
+            <div className="w-full h-4 border-2 border-red-900 bg-black/50 relative overflow-hidden">
               <div
                 className={`h-full transition-all duration-500 origin-left ${
                   healthPercent > 50 ? 'bg-red-600' : 'bg-red-700'
@@ -100,7 +100,7 @@ export const BattleUI: React.FC<BattleUIProps> = ({ enemy, state, children }) =>
               </div>
               {/* HP Text */}
               <div className="absolute inset-0 flex items-center justify-center">
-                <span className="font-bold text-red-100 drop-shadow-lg text-sm">
+                <span className="font-bold text-red-100 drop-shadow-lg text-xs">
                   {Math.max(0, healthPercent).toFixed(0)}%
                 </span>
               </div>
@@ -108,27 +108,27 @@ export const BattleUI: React.FC<BattleUIProps> = ({ enemy, state, children }) =>
           </div>
 
           {/* BATTLE STATUS */}
-          <div className="grid grid-cols-3 gap-4 mb-2">
+          <div className="grid grid-cols-3 gap-2">
             {/* Streak */}
-            <div className="border border-[var(--border-color)] bg-black/30 p-3">
-              <p className="text-[9px] font-pixel text-[var(--text-muted)] uppercase mb-1">Streak</p>
-              <p className="text-2xl font-bold text-yellow-400">
+            <div className="border border-[var(--border-color)] bg-black/30 p-2">
+              <p className="text-[8px] font-pixel text-[var(--text-muted)] uppercase mb-0.5">Streak</p>
+              <p className="text-lg font-bold text-yellow-400">
                 {state.playerStreak > 0 ? `${state.playerStreak}🔥` : '--'}
               </p>
             </div>
 
             {/* Questions */}
-            <div className="border border-[var(--border-color)] bg-black/30 p-3">
-              <p className="text-[9px] font-pixel text-[var(--text-muted)] uppercase mb-1">Questions</p>
-              <p className="text-2xl font-bold text-blue-400">
+            <div className="border border-[var(--border-color)] bg-black/30 p-2">
+              <p className="text-[8px] font-pixel text-[var(--text-muted)] uppercase mb-0.5">Questions</p>
+              <p className="text-lg font-bold text-blue-400">
                 {state.questionsRemaining}/{state.totalQuestions}
               </p>
             </div>
 
             {/* Status */}
-            <div className="border border-[var(--border-color)] bg-black/30 p-3">
-              <p className="text-[9px] font-pixel text-[var(--text-muted)] uppercase mb-1">Status</p>
-              <p className={`text-lg font-bold ${state.isDefeated ? 'text-red-500' : state.isVictory ? 'text-green-500' : 'text-green-400'}`}>
+            <div className="border border-[var(--border-color)] bg-black/30 p-2">
+              <p className="text-[8px] font-pixel text-[var(--text-muted)] uppercase mb-0.5">Status</p>
+              <p className={`text-sm font-bold ${state.isDefeated ? 'text-red-500' : state.isVictory ? 'text-green-500' : 'text-green-400'}`}>
                 {state.isDefeated ? 'DEFEAT' : state.isVictory ? 'VICTORY' : 'COMBAT'}
               </p>
             </div>

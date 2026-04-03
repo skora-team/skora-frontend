@@ -293,7 +293,7 @@ export function LessonPage() {
           <BattleUI enemy={enemy} state={battleHook.battleState}>
             <section className="bg-[var(--bg-sidebar)] border-t-4 border-[var(--accent)] rounded-lg shadow-2xl overflow-hidden mt-12">
           
-          <div className="p-8 space-y-10">
+          <div className="p-4 space-y-4">
             {questions.length === 0 ? (
               <div className="text-center py-8 text-[var(--text-muted)] border border-dashed border-[var(--border-color)]">
                 NO QUESTIONS GENERATED FOR THIS ORDER INDEX ({lesson.order_index})
@@ -307,15 +307,15 @@ export function LessonPage() {
                 return (
                   <div className="pb-4">
                     {/* Turn Counter */}
-                    <div className="mb-6 p-4 bg-[var(--accent-glow)] border border-[var(--accent)] rounded-lg">
+                    <div className="mb-3 p-3 bg-[var(--accent-glow)] border border-[var(--accent)] rounded-lg">
                       <div className="text-center">
-                        <div className="text-sm font-pixel text-[var(--text-muted)]">⚔️ TURN {currentQuestionIndex + 1} OF {questions.length}</div>
-                        <div className="text-2xl font-bold font-pixel text-[var(--accent)] mt-1">KNOWLEDGE STRIKE</div>
+                        <div className="text-xs font-pixel text-[var(--text-muted)]">⚔️ TURN {currentQuestionIndex + 1} OF {questions.length}</div>
+                        <div className="text-lg font-bold font-pixel text-[var(--accent)]">KNOWLEDGE STRIKE</div>
                       </div>
                     </div>
 
                     {/* Question */}
-                    <h3 className="text-lg font-bold text-[var(--text-main)] mb-6">
+                    <h3 className="text-lg font-bold text-[var(--text-main)] mb-3">
                       {getQuestionText(q)}
                     </h3>
                     
@@ -325,7 +325,7 @@ export function LessonPage() {
                         ANSWER OPTIONS UNAVAILABLE FOR THIS QUESTION.
                       </div>
                     ) : (
-                      <div className="grid gap-3">
+                      <div className="grid gap-2">
                         {questionOptions.map((opt, optIdx) => {
                           const optIsSelected = selectedAnswers[q.id] === opt.id;
                           let cls = "border-[var(--border-color)] bg-[var(--bg-main)]/50 text-[var(--text-muted)] hover:border-[var(--accent)] hover:bg-[var(--bg-main)]";
@@ -343,9 +343,9 @@ export function LessonPage() {
                                 }
                               }}
                               disabled={turnInProgress}
-                              className={`w-full text-left p-4 border rounded flex items-center gap-3 transition-all ${cls} disabled:opacity-50`}
+                              className={`w-full text-left p-3 border rounded flex items-center gap-2 transition-all ${cls} disabled:opacity-50`}
                             >
-                              {optIsSelected ? <CheckCircle2 size={20} className="flex-shrink-0" /> : <Circle size={20} className="flex-shrink-0" />} 
+                              {optIsSelected ? <CheckCircle2 size={18} className="flex-shrink-0" /> : <Circle size={18} className="flex-shrink-0" />} 
                               <span>{opt.text}</span>
                             </button>
                           );
@@ -382,7 +382,7 @@ export function LessonPage() {
                             ANSWER OPTIONS UNAVAILABLE FOR THIS QUESTION.
                           </div>
                         ) : (
-                          <div className="grid gap-3">
+                          <div className="grid gap-2">
                             {questionOptions.map((opt, optIdx) => {
                               const optIsSelected = selectedAnswers[q.id] === opt.id;
                               let cls = "border-[var(--border-color)] bg-[var(--bg-main)]/50 text-[var(--text-muted)]";
@@ -397,7 +397,7 @@ export function LessonPage() {
                                 <button 
                                   key={`result-opt-${q.id}-${opt.id || optIdx}`} 
                                   disabled
-                                  className={`w-full text-left p-4 border rounded flex items-center gap-3 ${cls}`}
+                                  className={`w-full text-left p-3 border rounded flex items-center gap-2 ${cls}`}
                                 >
                                   {optIsSelected ? <CheckCircle2 size={18}/> : <Circle size={18}/>} 
                                   {opt.text}
@@ -414,12 +414,12 @@ export function LessonPage() {
             )}
           </div>
           
-          <div className="p-6 bg-[var(--bg-main)] border-t border-[var(--border-color)] flex justify-end">
+          <div className="p-4 bg-[var(--bg-main)] border-t border-[var(--border-color)] flex justify-end">
              {!quizSubmitted ? (
                <button 
                  onClick={handleSubmitTurn}
                  disabled={selectedAnswers[questions[currentQuestionIndex]?.id] === undefined || turnInProgress}
-                 className="bg-[var(--accent)] text-black font-bold font-pixel py-3 px-8 rounded disabled:opacity-50 hover:bg-[var(--accent)]/90 transition-all"
+                 className="bg-[var(--accent)] text-black font-bold font-pixel py-2 px-6 rounded disabled:opacity-50 hover:bg-[var(--accent)]/90 transition-all"
                >
                  {turnInProgress
                    ? 'EXECUTING...'
