@@ -4,9 +4,8 @@ import { api } from '../../services/api';
 import type { AnswerOption, Lesson, Question, RecommendationTarget } from '../../types/api.types';
 import { DashboardLayout } from '../../components/layout/DashboardLayout';
 import { LessonContent } from '../../components/dashboard/LessonContent';
-import { ChevronLeft, CheckCircle2, Circle, Play, XCircle } from 'lucide-react';
+import { ChevronLeft, CheckCircle2, Circle, XCircle } from 'lucide-react';
 import { useGameState } from '../../hooks/useGameState';
-import { GameHUD } from '../../components/GameHUD';
 import { XPFloatingText } from '../../components/XPFloatingText';
 import { QuizResultsCard } from '../../components/QuizResultsCard';
 import { useAchievements } from '../../hooks/useAchievements';
@@ -293,21 +292,6 @@ export function LessonPage() {
         {enemy && (
           <BattleUI enemy={enemy} state={battleHook.battleState}>
             <section className="bg-[var(--bg-sidebar)] border-t-4 border-[var(--accent)] rounded-lg shadow-2xl overflow-hidden mt-12">
-          <div className="bg-[var(--bg-main)] p-6 border-b border-[var(--border-color)] space-y-4">
-            <div className="flex justify-between items-center mb-4">
-              <h2 className="text-xl font-bold font-pixel text-[var(--text-main)]">KNOWLEDGE CHECK</h2>
-              <Play className="text-[var(--accent)]" />
-            </div>
-            {!quizSubmitted && (
-              <GameHUD
-                streak={gameState.metrics.streak}
-                totalXP={gameState.metrics.totalXP}
-                multiplier={gameState.metrics.xpMultiplier}
-                currentQuestion={gameState.metrics.answeredQuestions.size + 1}
-                totalQuestions={questions.length}
-              />
-            )}
-          </div>
           
           <div className="p-8 space-y-10">
             {questions.length === 0 ? (
