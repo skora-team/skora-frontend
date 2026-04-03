@@ -19,7 +19,7 @@ export interface BattleState {
 interface BattleUIProps {
   enemy: BattleEnemyConfig;
   state: BattleState;
-  onAnswer: (correct: boolean) => void;
+  onAnswer?: (correct: boolean) => void;
   children?: React.ReactNode; // Quiz content goes here
 }
 

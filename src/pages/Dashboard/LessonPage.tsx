@@ -12,6 +12,10 @@ import { QuizResultsCard } from '../../components/QuizResultsCard';
 import { useAchievements } from '../../hooks/useAchievements';
 import { AchievementsPanel } from '../../components/AchievementsPanel';
 import { AchievementToast } from '../../components/AchievementToast';
+import { BattleUI } from '../../components/BattleUI';
+import { useBattle } from '../../hooks/useBattle';
+import { generateRandomEnemy } from '../../utils/enemyGenerator';
+import type { BattleEnemyConfig } from '../../components/BattleUI';
 
 function getQuestionText(q: Question): string {
   return q.question_text ?? q.text ?? 'Untitled question';
@@ -60,6 +64,10 @@ export function LessonPage() {
   const [quizStartTime] = useState<number>(Date.now());
   const [toastQueue, setToastQueue] = useState<Array<{ id: string; name: string; icon: string }>>([]);
   const [currentToast, setCurrentToast] = useState<{ id: string; name: string; icon: string } | null>(null);
+
+  // Battle State
+  const [enemy, setEnemy] = useState<BattleEnemyConfig | null>(null);
+  const battleHook = useBattle({ difficultyTier: 'apprentice', totalQuestions: 10 });
 
   const answeredCount = questions.reduce((count, q) => {
     return selectedAnswers[q.id] !== undefined ? count + 1 : count;
@@ -180,6 +188,9 @@ export function LessonPage() {
         
         if (currentLesson) {
           setLesson(currentLesson);
+          // Generate random enemy for this battle
+          const randomEnemy = generateRandomEnemy('apprentice'); // Can be scaled by user rank later
+          setEnemy(randomEnemy);
 
           // 3. Fetch Questions using the specific path from your API docs
           // Path: /courses/{id}/lessons/order/{index}/questions/random
@@ -247,7 +258,10 @@ export function LessonPage() {
         
         <LessonContent apiContent={lesson.content ?? ''} />
 
-        <section className="bg-[var(--bg-sidebar)] border-t-4 border-[var(--accent)] rounded-lg shadow-2xl overflow-hidden mt-12">
+        {/* BATTLE MODE - Wrap quiz in BattleUI */}
+        {enemy && (
+          <BattleUI enemy={enemy} state={battleHook.battleState}>
+            <section className="bg-[var(--bg-sidebar)] border-t-4 border-[var(--accent)] rounded-lg shadow-2xl overflow-hidden mt-12">
           <div className="bg-[var(--bg-main)] p-6 border-b border-[var(--border-color)] space-y-4">
             <div className="flex justify-between items-center mb-4">
               <h2 className="text-xl font-bold font-pixel text-[var(--text-main)]">KNOWLEDGE CHECK</h2>
@@ -311,6 +325,12 @@ export function LessonPage() {
                             if (!quizSubmitted) {
                               const isCorrect = opt.is_correct || false;
                               gameState.recordAnswer(q.id, isCorrect);
+                              // Update battle state
+                              if (isCorrect) {
+                                battleHook.recordCorrectAnswer();
+                              } else {
+                                battleHook.recordWrongAnswer();
+                              }
                               setLastAnsweredQuestionId(q.id);
                               setSelectedAnswers(p => ({...p, [q.id]: opt.id}));
                             }
@@ -401,7 +421,9 @@ export function LessonPage() {
               )}
             </div>
           )}
-        </section>
+            </section>
+          </BattleUI>
+        )}
 
         <XPFloatingText 
           amount={gameState.lastXPGain?.amount ?? 0}
