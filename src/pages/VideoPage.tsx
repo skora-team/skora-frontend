@@ -7,7 +7,7 @@ const VideoPage: React.FC = () => {
     <div className="min-h-screen bg-black">
       {/* VideoOverlay will show the video fullscreen */}
       <VideoOverlay
-        src="public/video 4.mp4"   // put your video in public/hero-video.mp4
+        src="https://res.cloudinary.com/dxuc4g8ov/video/upload/v1775216135/video_4_dyhvi7.mp4"   // put your video in public/hero-video.mp4
         poster="/hero-poster.jpg"
         loop={false}
         autoShow={true}
