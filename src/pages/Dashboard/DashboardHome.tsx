@@ -5,6 +5,9 @@ import type { CourseProgress, CourseSummary } from '../../types/api.types';
 import { Code2, Database, Terminal, PlayCircle, Loader2, AlertTriangle, TrendingUp } from 'lucide-react';
 import { DashboardLayout } from '../../components/layout/DashboardLayout';
 import { useDailyBonus } from '../../hooks/useDailyBonus';
+import { useQuestSystem } from '../../hooks/useQuestSystem';
+import { QuestPanel } from '../../components/QuestPanel';
+import { NarrativeBanner } from '../../components/NarrativeBanner';
 
 const getIcon = (title: string) => {
   if (!title) return PlayCircle;
@@ -21,6 +24,7 @@ export function DashboardHome() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const { bonus, claimBonus } = useDailyBonus();
+  const { quests, allCompleted } = useQuestSystem();
   const [bonusXPClaimed, setBonusXPClaimed] = useState(false);
 
   useEffect(() => {
@@ -66,6 +70,13 @@ export function DashboardHome() {
           // SELECT A TRAINING MODULE TO CONTINUE
         </p>
       </header>
+
+      {/* NARRATIVE BANNER */}
+      {!loading && (
+        <div className="mb-12">
+          <NarrativeBanner variant="quote" icon="📖" />
+        </div>
+      )}
 
       {/* DAILY BONUS CARD */}
       {!loading && !error && (
@@ -134,7 +145,7 @@ export function DashboardHome() {
 
       {/* COURSES GRID */}
       {!loading && !error && (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-12">
           {courses.map((course) => {
             const Icon = getIcon(course.title);
             const progress = progressByCourse[course.id];
@@ -175,6 +186,13 @@ export function DashboardHome() {
               </Link>
             );
           })}
+        </div>
+      )}
+
+      {/* QUESTS PANEL */}
+      {!loading && !error && (
+        <div className="mb-8 max-w-4xl">
+          <QuestPanel quests={quests} allCompleted={allCompleted} />
         </div>
       )}
     </DashboardLayout>

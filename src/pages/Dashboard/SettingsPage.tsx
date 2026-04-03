@@ -5,6 +5,9 @@ import { DashboardLayout } from '../../components/layout/DashboardLayout';
 import { User, Cpu, Loader2, ShieldAlert, Terminal, Database, Code2, Zap, ArrowRight } from 'lucide-react';
 import { useAchievements } from '../../hooks/useAchievements';
 import { AchievementsPanel } from '../../components/AchievementsPanel';
+import { useRankSystem } from '../../hooks/useRankSystem';
+import { RankProgressBar } from '../../components/RankProgressBar';
+import { CosmeticsShop } from '../../components/CosmeticsShop';
 
 // Upgraded Tactical Bar with 4 Blocks
 const TacticalBar = ({ percent, label, icon: Icon, courseId }: { percent: number, label: string, icon: any, courseId?: number }) => {
@@ -72,6 +75,17 @@ export function SettingsPage() {
   // Achievements
   const { achievements } = useAchievements();
   
+  // Rank System
+  const { rankInfo } = useRankSystem();
+  
+  // Cosmetics
+  const [equippedCosmetics, setEquippedCosmetics] = useState<Record<string, string>>({
+    frame: '',
+    title: '',
+    theme: '',
+    effect: ''
+  });
+  
   const [progressData, setProgressData] = useState({
     python: { percent: 0, id: 0 },
     sql: { percent: 0, id: 0 },
@@ -129,6 +143,13 @@ export function SettingsPage() {
     }
     loadData();
   }, []);
+
+  const handleEquipCosmetic = (cosmeticId: string, type: string) => {
+    setEquippedCosmetics(prev => ({
+      ...prev,
+      [type]: prev[type] === cosmeticId ? '' : cosmeticId
+    }));
+  };
 
   const handleQuickLogin = (id: number) => {
     auth.setUserId(id);
@@ -209,9 +230,23 @@ export function SettingsPage() {
         </div>
       </div>
 
+      {/* Rank Progression Section */}
+      <div className="mt-12 max-w-5xl">
+        {rankInfo && <RankProgressBar rankInfo={rankInfo} />}
+      </div>
+
       {/* Achievements Section */}
       <div className="mt-12 max-w-5xl">
         <AchievementsPanel achievements={achievements} />
+      </div>
+
+      {/* Cosmetics Section */}
+      <div className="mt-12 max-w-5xl">
+        <CosmeticsShop
+          unlockedCosmetics={rankInfo?.unlockedCosmetics || []}
+          equippedCosmetics={equippedCosmetics}
+          onEquip={handleEquipCosmetic}
+        />
       </div>
     </DashboardLayout>
   );

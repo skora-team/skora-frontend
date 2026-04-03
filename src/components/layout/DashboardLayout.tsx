@@ -1,4 +1,4 @@
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { LayoutDashboard, LogOut, Cpu, Sun, Moon, Network } from 'lucide-react';
 import { useTheme } from '../../context/ThemeContext';
 import { auth } from '../../services/api'; // FIXED PATH
@@ -6,6 +6,7 @@ import { auth } from '../../services/api'; // FIXED PATH
 export function DashboardLayout({ children }: { children: React.ReactNode }) {
   const { theme, toggleTheme } = useTheme();
   const navigate = useNavigate();
+  const location = useLocation();
 
   const handleLogout = () => {
     auth.logout(); 
@@ -23,17 +24,53 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
 
         <nav className="flex-1 p-6 space-y-6">
           <div className="text-xs font-bold text-[var(--text-muted)] uppercase tracking-widest mb-4">Main Modules</div>
-          <Link to="/DashboardHome" className="group flex items-center space-x-4 p-3 hover:bg-[var(--accent-glow)] border-l-4 border-transparent hover:border-[var(--accent)] transition-all">
-            <LayoutDashboard className="text-[var(--text-muted)] pixel-font group-hover:text-[var(--accent)]" size={20} />
-            <span className="font-bold tracking-wide pixel-font group-hover:text-[var(--accent)] transition-all">DASHBOARD</span>
+          <Link to="/DashboardHome" className={`group flex items-center space-x-4 p-3 transition-all border-l-4 ${
+            location.pathname === '/DashboardHome' || location.pathname === '/'
+              ? 'bg-[var(--accent-glow)] border-[var(--accent)]'
+              : 'hover:bg-[var(--accent-glow)] border-transparent hover:border-[var(--accent)]'
+          }`}>
+            <LayoutDashboard className={`pixel-font ${
+              location.pathname === '/DashboardHome' || location.pathname === '/'
+                ? 'text-[var(--accent)]'
+                : 'text-[var(--text-muted)] group-hover:text-[var(--accent)]'
+            }`} size={20} />
+            <span className={`font-bold tracking-wide pixel-font transition-all ${
+              location.pathname === '/DashboardHome' || location.pathname === '/'
+                ? 'text-[var(--accent)]'
+                : 'group-hover:text-[var(--accent)]'
+            }`}>DASHBOARD</span>
           </Link>
-          <Link to="/settings" className="group flex items-center space-x-4 p-3 hover:bg-[var(--accent-glow)] border-l-4 border-transparent hover:border-[var(--accent)] transition-all">
-            <Cpu className="text-[var(--text-muted)] pixel-font group-hover:text-[var(--accent)]" size={20} />
-            <span className="font-bold tracking-wide pixel-font group-hover:text-[var(--accent)] transition-all">PROFILE</span>
+          <Link to="/settings" className={`group flex items-center space-x-4 p-3 transition-all border-l-4 ${
+            location.pathname === '/settings'
+              ? 'bg-[var(--accent-glow)] border-[var(--accent)]'
+              : 'hover:bg-[var(--accent-glow)] border-transparent hover:border-[var(--accent)]'
+          }`}>
+            <Cpu className={`pixel-font ${
+              location.pathname === '/settings'
+                ? 'text-[var(--accent)]'
+                : 'text-[var(--text-muted)] group-hover:text-[var(--accent)]'
+            }`} size={20} />
+            <span className={`font-bold tracking-wide pixel-font transition-all ${
+              location.pathname === '/settings'
+                ? 'text-[var(--accent)]'
+                : 'group-hover:text-[var(--accent)]'
+            }`}>PROFILE</span>
           </Link>
-           <Link to="/skills" className="group flex items-center space-x-4 p-3 hover:bg-[var(--accent-glow)] border-l-4 border-transparent hover:border-[var(--accent)] transition-all">
-            <Network className="text-[var(--text-muted)] pixel-font group-hover:text-[var(--accent)]" size={20} />
-            <span className="font-bold tracking-wide pixel-font group-hover:text-[var(--accent)] transition-all">SKILLTREE</span>
+          <Link to="/skills" className={`group flex items-center space-x-4 p-3 transition-all border-l-4 ${
+            location.pathname === '/skills'
+              ? 'bg-[var(--accent-glow)] border-[var(--accent)]'
+              : 'hover:bg-[var(--accent-glow)] border-transparent hover:border-[var(--accent)]'
+          }`}>
+            <Network className={`pixel-font ${
+              location.pathname === '/skills'
+                ? 'text-[var(--accent)]'
+                : 'text-[var(--text-muted)] group-hover:text-[var(--accent)]'
+            }`} size={20} />
+            <span className={`font-bold tracking-wide pixel-font transition-all ${
+              location.pathname === '/skills'
+                ? 'text-[var(--accent)]'
+                : 'group-hover:text-[var(--accent)]'
+            }`}>SKILLTREE</span>
           </Link>
         </nav>
 
