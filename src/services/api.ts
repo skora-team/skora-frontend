@@ -1,6 +1,6 @@
 import type { AnswerOption, Completion, CourseProgress, Lesson, Question, QuizResult, QuizSubmission, RecommendationTarget } from '../types/api.types';
 
-const BASE_URL = 'http://127.0.0.1:8000'; 
+const BASE_URL = 'https://skora-backend.onrender.com'; 
 const PROGRESS_VERSION_KEY = 'progress_version';
 
 export const auth = {
