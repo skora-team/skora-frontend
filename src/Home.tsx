@@ -161,8 +161,6 @@ const Home: React.FC = () => {
             >
               LEVEL UP YOUR SKILLS
             </ScrollFloat>
-
-          {/* ❌ NOT WRAPPED — this is CORRECT */}
           <LevelUpSection />
         </section>
       </main>

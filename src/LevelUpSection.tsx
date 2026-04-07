@@ -103,7 +103,7 @@
             <div className="flex justify-center md:justify-end">
               <img
                 ref={img2.ref}
-                src="public/pokemoncard.png"
+                src="/pokemoncard.png"
                 className={`${
                   img2.isVisible ? "fade-up " : "opacity-0 translate-y-5"
                 } w-64 md:w-80`}
@@ -121,7 +121,7 @@
       <div className="flex flex-col justify-center md:justify-start items-center md:items-start">
         <img
           ref={img3.ref}
-          src="public/chi.gif"
+          src="/chi.gif"
           className={`${
             img3.isVisible ? "fade-up" : "opacity-0 translate-y-5"
           } w-80 md:w-[800px]`}   // ← increased size
