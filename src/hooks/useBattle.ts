@@ -60,15 +60,14 @@ export function useBattle(config: BattleConfig) {
       if (prev.isDefeated || prev.isVictory) return prev;
 
       const newQuestionsRemaining = prev.questionsRemaining - 1;
-      const wrongAnswerPenalty = 2;
-      const newHealth = prev.enemyHealth - wrongAnswerPenalty;
 
       // 3 strikes and you're out
       const isDefeated = prev.wrongAnswers + 1 >= 3;
 
       return {
         ...prev,
-        enemyHealth: Math.max(0, newHealth),
+        // Wrong answers should cost attempts, not damage the enemy.
+        enemyHealth: prev.enemyHealth,
         playerStreak: 0, // Streak breaks on wrong answer
         questionsRemaining: newQuestionsRemaining,
         isDefeated,

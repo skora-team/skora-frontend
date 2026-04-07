@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 
 export interface BattleEnemyConfig {
   name: string;
@@ -21,6 +21,7 @@ interface BattleUIProps {
   enemy: BattleEnemyConfig;
   state: BattleState;
   onAnswer?: (correct: boolean) => void;
+  onRetry?: () => void;
   children?: React.ReactNode; // Quiz content goes here
 }
 
@@ -40,20 +41,9 @@ const DIFFICULTY_NAMES: Record<string, string> = {
   legend: 'Ancient One'
 };
 
-export const BattleUI: React.FC<BattleUIProps> = ({ enemy, state, children }) => {
-  const [healthPercent, setHealthPercent] = useState(100);
-  const [shakeEnabled, setShakeEnabled] = useState(false);
-
-  useEffect(() => {
-    const newPercent = (state.enemyHealth / enemy.maxHealth) * 100;
-    setHealthPercent(newPercent);
-    
-    // Trigger shake on damage
-    if (state.enemyHealth < enemy.maxHealth) {
-      setShakeEnabled(true);
-      setTimeout(() => setShakeEnabled(false), 300);
-    }
-  }, [state.enemyHealth, enemy.maxHealth]);
+export const BattleUI: React.FC<BattleUIProps> = ({ enemy, state, onRetry, children }) => {
+  const healthPercent = Math.max(0, Math.min(100, (state.enemyHealth / enemy.maxHealth) * 100));
+  const hasBattleStarted = state.questionsRemaining < state.totalQuestions;
 
   const colors = DIFFICULTY_COLORS[enemy.difficulty] || DIFFICULTY_COLORS['apprentice'];
   const difficultyName = DIFFICULTY_NAMES[enemy.difficulty] || 'Unknown';
@@ -66,7 +56,7 @@ export const BattleUI: React.FC<BattleUIProps> = ({ enemy, state, children }) =>
       </div>
 
       {/* ENEMY SECTION */}
-      <div className={`mb-6 relative ${shakeEnabled ? 'animate-shake' : ''}`}>
+      <div key={`${state.questionsRemaining}-${state.enemyHealth}`} className={`mb-6 relative ${hasBattleStarted ? 'animate-shake' : ''}`}>
         <div className={`border-4 border-[var(--border-color)] bg-black/60 p-4 ${colors.glow} transition-all`}>
           {/* Enemy Name & Difficulty */}
           <div className="text-center mb-3">
@@ -178,6 +168,22 @@ export const BattleUI: React.FC<BattleUIProps> = ({ enemy, state, children }) =>
             </p>
             <div className="text-lg font-bold text-red-400">
               ⚠️ MISSION FAILED ⚠️
+            </div>
+            <div className="mt-6 flex items-center justify-center gap-3">
+              <button
+                type="button"
+                onClick={() => onRetry?.()}
+                className="border border-[var(--border-color)] text-[var(--text-muted)] font-bold font-pixel py-2 px-4 rounded hover:text-[var(--text-main)] transition-all"
+              >
+                OKAY
+              </button>
+              <button
+                type="button"
+                onClick={() => onRetry?.()}
+                className="bg-[var(--accent)] text-black font-bold font-pixel py-2 px-5 rounded hover:bg-[var(--accent)]/90 transition-all"
+              >
+                RETRY
+              </button>
             </div>
           </div>
         </div>

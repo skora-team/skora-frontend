@@ -316,7 +316,7 @@ export function LessonPage() {
 
         {/* BATTLE MODE - Wrap quiz in BattleUI */}
         {enemy && (
-          <BattleUI enemy={enemy} state={battleHook.battleState}>
+          <BattleUI enemy={enemy} state={battleHook.battleState} onRetry={handleRetry}>
             <section className="bg-[var(--bg-sidebar)] border-t-4 border-[var(--accent)] rounded-lg shadow-2xl overflow-hidden mt-12">
           
           <div className="p-4 space-y-4">
