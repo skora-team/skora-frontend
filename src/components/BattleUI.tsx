@@ -22,6 +22,8 @@ interface BattleUIProps {
   state: BattleState;
   onAnswer?: (correct: boolean) => void;
   onRetry?: () => void;
+  onVictoryOkay?: () => void;
+  victoryOverlayVisible?: boolean;
   children?: React.ReactNode; // Quiz content goes here
 }
 
@@ -41,7 +43,7 @@ const DIFFICULTY_NAMES: Record<string, string> = {
   legend: 'Ancient One'
 };
 
-export const BattleUI: React.FC<BattleUIProps> = ({ enemy, state, onRetry, children }) => {
+export const BattleUI: React.FC<BattleUIProps> = ({ enemy, state, onRetry, onVictoryOkay, victoryOverlayVisible = true, children }) => {
   const healthPercent = Math.max(0, Math.min(100, (state.enemyHealth / enemy.maxHealth) * 100));
   const hasBattleStarted = state.questionsRemaining < state.totalQuestions;
 
@@ -142,9 +144,9 @@ export const BattleUI: React.FC<BattleUIProps> = ({ enemy, state, onRetry, child
       </div>
 
       {/* VICTORY SCREEN */}
-      {state.isVictory && (
+      {state.isVictory && victoryOverlayVisible && (
         <div className="fixed inset-0 bg-black/70 flex items-center justify-center z-50">
-          <div className="bg-[var(--bg-main)] border-4 border-green-500 p-12 text-center max-w-md shadow-[0_0_50px_rgba(34,197,94,0.3)] animate-bounce">
+          <div className="bg-[var(--bg-main)] border-4 border-green-500 p-12 text-center max-w-md shadow-[0_0_50px_rgba(34,197,94,0.3)]">
             <div className="text-6xl mb-4">🎉</div>
             <h3 className="text-3xl font-pixel text-green-400 uppercase mb-2">Victory!</h3>
             <p className="text-[var(--text-muted)] font-mono text-sm mb-6">
@@ -152,6 +154,15 @@ export const BattleUI: React.FC<BattleUIProps> = ({ enemy, state, onRetry, child
             </p>
             <div className="text-lg font-bold text-yellow-400">
               ⭐ BATTLE COMPLETE ⭐
+            </div>
+            <div className="mt-6 flex items-center justify-center">
+              <button
+                type="button"
+                onClick={() => onVictoryOkay?.()}
+                className="bg-green-500 text-black font-bold font-pixel py-2 px-6 rounded hover:bg-green-400 transition-all"
+              >
+                OKAY
+              </button>
             </div>
           </div>
         </div>

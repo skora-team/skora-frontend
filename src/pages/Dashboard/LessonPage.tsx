@@ -69,6 +69,7 @@ export function LessonPage() {
   const { resetBattle } = battleHook;
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [turnInProgress, setTurnInProgress] = useState(false);
+  const [victoryOverlayVisible, setVictoryOverlayVisible] = useState(true);
 
   async function handleSubmitQuiz() {
     if (!lesson || !courseId || questions.length === 0) return;
@@ -168,6 +169,7 @@ export function LessonPage() {
     setNewlyUnlockedAchievements([]);
     setCurrentQuestionIndex(0);
     setTurnInProgress(false);
+    setVictoryOverlayVisible(true);
     resetBattle();
   }
 
@@ -236,6 +238,7 @@ export function LessonPage() {
       setTurnInProgress(false);
       setQuizSubmitted(false);
       setSelectedAnswers({});
+      setVictoryOverlayVisible(true);
       
       try {
         // Fetch lessons to find order_index
@@ -316,7 +319,13 @@ export function LessonPage() {
 
         {/* BATTLE MODE - Wrap quiz in BattleUI */}
         {enemy && (
-          <BattleUI enemy={enemy} state={battleHook.battleState} onRetry={handleRetry}>
+          <BattleUI
+            enemy={enemy}
+            state={battleHook.battleState}
+            onRetry={handleRetry}
+            victoryOverlayVisible={victoryOverlayVisible}
+            onVictoryOkay={() => setVictoryOverlayVisible(false)}
+          >
             <section className="bg-[var(--bg-sidebar)] border-t-4 border-[var(--accent)] rounded-lg shadow-2xl overflow-hidden mt-12">
           
           <div className="p-4 space-y-4">
