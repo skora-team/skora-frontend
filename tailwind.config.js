@@ -24,6 +24,16 @@ export default {
         'pixel-glow-yellow': '0 0 10px #FFD700',
         'pixel-glow-blue': '0 0 10px #3b82f6',
         'pixel-glow-brown': '0 0 10px #d97706',
+      },
+      animation: {
+        'shake': 'shake 0.3s ease-in-out',
+      },
+      keyframes: {
+        'shake': {
+          '0%, 100%': { transform: 'translateX(0)' },
+          '25%': { transform: 'translateX(-8px)' },
+          '75%': { transform: 'translateX(8px)' },
+        }
       }
     },
   },

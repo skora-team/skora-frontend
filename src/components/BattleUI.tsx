@@ -14,6 +14,7 @@ export interface BattleState {
   totalQuestions: number;
   isDefeated: boolean;
   isVictory: boolean;
+  wrongAnswers?: number;
 }
 
 interface BattleUIProps {
@@ -54,7 +55,8 @@ export const BattleUI: React.FC<BattleUIProps> = ({ enemy, state, children }) =>
     }
   }, [state.enemyHealth, enemy.maxHealth]);
 
-  const colors = DIFFICULTY_COLORS[enemy.difficulty];
+  const colors = DIFFICULTY_COLORS[enemy.difficulty] || DIFFICULTY_COLORS['apprentice'];
+  const difficultyName = DIFFICULTY_NAMES[enemy.difficulty] || 'Unknown';
 
   return (
     <div className="relative w-full">
@@ -64,13 +66,13 @@ export const BattleUI: React.FC<BattleUIProps> = ({ enemy, state, children }) =>
       </div>
 
       {/* ENEMY SECTION */}
-      <div className={`mb-6 relative ${shakeEnabled ? 'animate-pulse' : ''}`}>
+      <div className={`mb-6 relative ${shakeEnabled ? 'animate-shake' : ''}`}>
         <div className={`border-4 border-[var(--border-color)] bg-black/60 p-4 ${colors.glow} transition-all`}>
           {/* Enemy Name & Difficulty */}
           <div className="text-center mb-3">
             <div className={`text-3xl`}>{enemy.emoji}</div>
             <h2 className={`text-xl font-pixel font-bold uppercase ${colors.text}`}>
-              {DIFFICULTY_NAMES[enemy.difficulty]}
+              {difficultyName}
             </h2>
             <p className="text-xs font-mono text-[var(--text-muted)] uppercase">
               {enemy.name}
@@ -108,7 +110,7 @@ export const BattleUI: React.FC<BattleUIProps> = ({ enemy, state, children }) =>
           </div>
 
           {/* BATTLE STATUS */}
-          <div className="grid grid-cols-3 gap-2">
+          <div className="grid grid-cols-4 gap-2">
             {/* Streak */}
             <div className="border border-[var(--border-color)] bg-black/30 p-2">
               <p className="text-[8px] font-pixel text-[var(--text-muted)] uppercase mb-0.5">Streak</p>
@@ -122,6 +124,14 @@ export const BattleUI: React.FC<BattleUIProps> = ({ enemy, state, children }) =>
               <p className="text-[8px] font-pixel text-[var(--text-muted)] uppercase mb-0.5">Questions</p>
               <p className="text-lg font-bold text-blue-400">
                 {state.questionsRemaining}/{state.totalQuestions}
+              </p>
+            </div>
+
+            {/* Attempts */}
+            <div className="border border-[var(--border-color)] bg-black/30 p-2">
+              <p className="text-[8px] font-pixel text-[var(--text-muted)] uppercase mb-0.5">Attempts</p>
+              <p className="text-lg font-bold text-orange-400">
+                {3 - (state.wrongAnswers || 0)}/3
               </p>
             </div>
 
@@ -143,7 +153,7 @@ export const BattleUI: React.FC<BattleUIProps> = ({ enemy, state, children }) =>
 
       {/* VICTORY SCREEN */}
       {state.isVictory && (
-        <div className="fixed inset-0 bg-black/70 flex items-center justify-center z-50 pointer-events-none">
+        <div className="fixed inset-0 bg-black/70 flex items-center justify-center z-50">
           <div className="bg-[var(--bg-main)] border-4 border-green-500 p-12 text-center max-w-md shadow-[0_0_50px_rgba(34,197,94,0.3)] animate-bounce">
             <div className="text-6xl mb-4">🎉</div>
             <h3 className="text-3xl font-pixel text-green-400 uppercase mb-2">Victory!</h3>
@@ -159,7 +169,7 @@ export const BattleUI: React.FC<BattleUIProps> = ({ enemy, state, children }) =>
 
       {/* DEFEAT SCREEN */}
       {state.isDefeated && (
-        <div className="fixed inset-0 bg-black/70 flex items-center justify-center z-50 pointer-events-none">
+        <div className="fixed inset-0 bg-black/70 flex items-center justify-center z-50">
           <div className="bg-[var(--bg-main)] border-4 border-red-500 p-12 text-center max-w-md shadow-[0_0_50px_rgba(239,68,68,0.3)] animate-pulse">
             <div className="text-6xl mb-4">💀</div>
             <h3 className="text-3xl font-pixel text-red-500 uppercase mb-2">Defeated</h3>

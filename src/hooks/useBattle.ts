@@ -48,7 +48,7 @@ export function useBattle(config: BattleConfig) {
         enemyHealth: Math.max(0, newHealth),
         playerStreak: newStreak,
         questionsRemaining: newQuestionsRemaining,
-        isVictory: isVictory || newQuestionsRemaining === 0,
+        isVictory: isVictory,
         correctAnswers: prev.correctAnswers + 1
       };
     });
@@ -63,8 +63,8 @@ export function useBattle(config: BattleConfig) {
       const wrongAnswerPenalty = 2;
       const newHealth = prev.enemyHealth - wrongAnswerPenalty;
 
-      // 3 strikes and you're out (or run out of questions)
-      const isDefeated = prev.wrongAnswers + 1 >= 3 || newQuestionsRemaining === 0;
+      // 3 strikes and you're out
+      const isDefeated = prev.wrongAnswers + 1 >= 3;
 
       return {
         ...prev,

@@ -66,6 +66,7 @@ export function LessonPage() {
   // Battle State
   const [enemy, setEnemy] = useState<BattleEnemyConfig | null>(null);
   const battleHook = useBattle({ difficultyTier: 'apprentice', totalQuestions: 10 });
+  const { resetBattle } = battleHook;
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [turnInProgress, setTurnInProgress] = useState(false);
 
@@ -167,10 +168,11 @@ export function LessonPage() {
     setNewlyUnlockedAchievements([]);
     setCurrentQuestionIndex(0);
     setTurnInProgress(false);
+    resetBattle();
   }
 
-  function handleSubmitTurn() {
-    if (!questions[currentQuestionIndex]) return;
+  async function handleSubmitTurn() {
+    if (!questions[currentQuestionIndex] || !lesson) return;
     
     const currentQuestion = questions[currentQuestionIndex];
     const selectedAnswerId = selectedAnswers[currentQuestion.id];
@@ -178,11 +180,30 @@ export function LessonPage() {
     if (selectedAnswerId === undefined) return;
     
     setTurnInProgress(true);
-    
-    // Check if answer is correct
-    const answers = answersByQuestion[currentQuestion.id] || [];
-    const selectedOption = answers.find(a => a.id === selectedAnswerId);
-    const isCorrect = selectedOption?.is_correct || false;
+
+    let isCorrect = false;
+    try {
+      // Backend is source of truth for correctness (matches pre-battle behavior).
+      const turnResult = await api.submitLessonQuiz(lesson.id, {
+        answers: [
+          {
+            question_id: currentQuestion.id,
+            answer_id: selectedAnswerId
+          }
+        ]
+      });
+      isCorrect = Boolean(turnResult.results?.[String(currentQuestion.id)]);
+    } catch (turnValidationError) {
+      // Fallback for resilience if turn validation call fails.
+      const rawAnswers = answersByQuestion[currentQuestion.id] || [];
+      const answers = rawAnswers.map((opt, index) => ({
+        id: opt.id ?? index + 1,
+        is_correct: opt.is_correct
+      }));
+      const selectedOption = answers.find(a => a.id === selectedAnswerId);
+      isCorrect = Boolean(selectedOption?.is_correct);
+      console.error('Turn validation failed; using local correctness fallback:', turnValidationError);
+    }
     
     // Update battle state
     if (isCorrect) {
@@ -210,6 +231,11 @@ export function LessonPage() {
     async function load() {
       if (!courseId || !lessonId) return;
       setLoading(true);
+      resetBattle();
+      setCurrentQuestionIndex(0);
+      setTurnInProgress(false);
+      setQuizSubmitted(false);
+      setSelectedAnswers({});
       
       try {
         // Fetch lessons to find order_index
@@ -261,7 +287,7 @@ export function LessonPage() {
       }
     }
     load();
-  }, [courseId, lessonId]);
+  }, [courseId, lessonId, resetBattle]);
 
   // Manage achievement toast queue
   useEffect(() => {
