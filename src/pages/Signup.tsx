@@ -43,27 +43,40 @@ const Signup: React.FC = () => {
       const data = await response.json();
 
       if (response.ok) {
-        // --- REAL ID LOGIC ---
+        // Register returns access token + user; hydrate session immediately.
         try {
-          const usersRes = await fetch(`${BASE_URL}/users/`);
-          const users = await usersRes.json();
-          const newUser = users.find(
-            (u: any) => u.username?.toLowerCase() === username.toLowerCase()
-          );
-          if (newUser) {
-            auth.setUserId(newUser.id); // Saves the real ID (Zoro, Omkar, etc.)
+          if (data?.access_token) {
+            localStorage.setItem("token", data.access_token);
           }
-        } catch (idErr) {
+
+          if (data?.user?.id) {
+            auth.setUserId(data.user.id);
+            console.log(`Operator ID ${data.user.id} synchronized from register response.`);
+          } else if (data?.access_token) {
+            // Fallback if user object is missing in response for any environment.
+            const meRes = await fetch(`${BASE_URL}/me/`, {
+              headers: {
+                Authorization: `Bearer ${data.access_token}`,
+              },
+            });
+            if (meRes.ok) {
+              const me = await meRes.json();
+              if (me?.id) {
+                auth.setUserId(me.id);
+                console.log(`Operator ID ${me.id} synchronized from /me.`);
+              }
+            }
+          }
+        } catch {
           console.error("ID sync failed");
         }
-        // --- END ID LOGIC ---
 
         console.log("Signup Successful");
         navigate("/DashboardHome"); 
       } else {
         setError(data.detail || "Signup failed. Try again.");
       }
-    } catch (err: any) {
+    } catch {
       setError("Network error. Is the server running?");
     } finally {
       setLoading(false);
