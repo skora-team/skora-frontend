@@ -71,12 +71,13 @@ export function SettingsPage() {
   const [loading, setLoading] = useState(true);
   const [sessionError, setSessionError] = useState(false);
   const [availableUsers, setAvailableUsers] = useState<any[]>([]);
+  const [lessonsCompleted, setLessonsCompleted] = useState(0);
   
   // Achievements
   const { achievements } = useAchievements();
   
   // Rank System
-  const { rankInfo } = useRankSystem();
+  const { rankInfo } = useRankSystem(lessonsCompleted);
   
   // Cosmetics
   const [equippedCosmetics, setEquippedCosmetics] = useState<Record<string, string>>({
@@ -114,12 +115,13 @@ export function SettingsPage() {
 
         const getStats = async (query: string) => {
           const course = courses.find((c: any) => c.title.toLowerCase().includes(query.toLowerCase()));
-          if (!course) return { percent: 0, id: 0 };
+          if (!course) return { percent: 0, id: 0, completedLessons: 0 };
 
           const progress = await api.getCourseProgress(course.id);
           return {
             percent: Math.round(progress.progress_percent),
-            id: course.id
+            id: course.id,
+            completedLessons: progress.completed_lessons
           };
         };
 
@@ -129,10 +131,12 @@ export function SettingsPage() {
           getStats('r')
         ]);
 
+        setLessonsCompleted(python.completedLessons + sql.completedLessons + r.completedLessons);
+
         setProgressData({
-          python,
-          sql,
-          r
+          python: { percent: python.percent, id: python.id },
+          sql: { percent: sql.percent, id: sql.id },
+          r: { percent: r.percent, id: r.id }
         });
 
       } catch (err) {
