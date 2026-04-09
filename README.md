@@ -1,73 +1,170 @@
-# React + TypeScript + Vite
+# Skora Frontend
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Skora is a gamified learning frontend for programming and data topics (Python, R, SQL) with quest-style progression, battle-mode quizzes, achievements, daily bonus XP, and a dashboard synced to a backend API.
 
-Currently, two official plugins are available:
+## Tech Stack
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- React 19 + TypeScript
+- Vite 7
+- React Router 7
+- Tailwind CSS 4
+- Framer Motion + GSAP (UI motion/interaction)
+- Lucide React + React Icons
+- React Markdown + remark/rehype plugins (lesson rendering)
 
-## React Compiler
+## Core Features
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+- Retro game-inspired landing and onboarding experience
+- Signup and login with JWT session storage
+- Operator session hydration via `/me/`
+- Dashboard with:
+  - course modules
+  - backend-synced progress bars
+  - quest panel
+  - daily XP bonus
+  - narrative banner
+- Course and lesson flows with backend quiz data
+- Turn-based battle quiz UI
+- XP gain tracking and streak logic
+- Achievement unlock system with toast notifications
+- Skill tree view (currently mock-data driven)
+- Error boundary and theme context provider
 
-## Expanding the ESLint configuration
+## Project Structure
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+```
+src/
+  app.tsx                      # Route map
+  main.tsx                     # App bootstrap (router + providers + error boundary)
+  Home.tsx                     # Landing page
+  LevelUpSection.tsx
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+  pages/
+    Login.tsx
+    Signup.tsx
+    VideoPage.tsx
+    SkillTreePage.tsx
+    Dashboard/
+      DashboardHome.tsx
+      CoursePage.tsx
+      LessonPage.tsx
+      SettingsPage.tsx
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+  components/
+    dashboard/LessonContent.tsx
+    layout/DashboardLayout.tsx
+    BattleUI.tsx
+    QuestPanel.tsx
+    AchievementsPanel.tsx
+    AchievementToast.tsx
+    QuizResultsCard.tsx
+    ...
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+  hooks/
+    useGameState.ts
+    useBattle.ts
+    useAchievements.ts
+    useDailyBonus.ts
+    useQuestSystem.ts
+    ...
+
+  services/
+    api.ts                     # Backend API client + auth helpers
+
+  types/
+    api.types.ts
+
+  utils/
+    enemyGenerator.ts
+    narrativeContent.ts
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+## Routing Overview
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+- `/` -> Landing page
+- `/about` -> About page
+- `/login` -> Login
+- `/signup` -> Signup
+- `/video` -> Intro video overlay
+- `/skills` and `/skill-tree` -> Skill tree page
+- `/DashboardHome` -> Main dashboard
+- `/settings` -> Settings
+- `/course/:courseId` -> Course details
+- `/course/:courseId/lesson/:lessonId` -> Lesson + quiz + battle flow
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+## Backend Integration
+
+The frontend currently targets:
+
+`https://skora-backend.onrender.com`
+
+This base URL is defined in:
+
+- `src/services/api.ts`
+- `src/pages/Login.tsx`
+- `src/pages/Signup.tsx`
+
+### Auth/session behavior
+
+- `token` is persisted in localStorage after login/signup.
+- `operator_id` is persisted in localStorage.
+- Session recovery attempts to hydrate identity through `/me/` when possible.
+
+### API behavior notes
+
+- Requests normalize leading/trailing slash behavior for FastAPI-style endpoints.
+- Auth header is automatically attached when token exists.
+- Some completion reads intentionally degrade to empty arrays on `404/405` to keep UI stable.
+
+## Getting Started
+
+### 1. Install dependencies
+
+```bash
+npm install
 ```
+
+### 2. Run development server
+
+```bash
+npm run dev
+```
+
+### 3. Build for production
+
+```bash
+npm run build
+```
+
+### 4. Preview production build
+
+```bash
+npm run preview
+```
+
+### 5. Lint
+
+```bash
+npm run lint
+```
+
+## NPM Scripts
+
+- `npm run dev` - Start Vite dev server
+- `npm run build` - Type-check and build
+- `npm run preview` - Preview production bundle
+- `npm run lint` - Run ESLint
+
+## Local Storage Keys
+
+- `token` - JWT access token
+- `operator_id` - current authenticated user id
+- `progress_version` - client-side cache-busting key for progress refresh
+
+## Recommended Next Improvement
+
+Move API host configuration to a single `VITE_API_BASE_URL` environment variable and read it from one shared config module to avoid divergence across pages and services.
+
+## License
+
+No license file is currently defined in this repository. Planning to add MIT license in future
